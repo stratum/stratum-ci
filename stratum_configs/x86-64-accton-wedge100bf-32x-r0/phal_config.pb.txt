@@ -1,0 +1,19 @@
+cards {
+  slot: 1
+  ports {
+    port: 1
+    physical_port_type: PHYSICAL_PORT_TYPE_QSFP_CAGE
+  }
+  ports {
+    port: 2
+    physical_port_type: PHYSICAL_PORT_TYPE_QSFP_CAGE
+  }
+  ports {
+    port: 3
+    physical_port_type: PHYSICAL_PORT_TYPE_QSFP_CAGE
+  }
+  ports {
+    port: 4
+    physical_port_type: PHYSICAL_PORT_TYPE_QSFP_CAGE
+  }
+}
