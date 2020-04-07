@@ -76,7 +76,7 @@
 		{
 			"name": "3/0",
 			"ifindex": 70,
-			"enabled": false,
+			"enabled": true,
 			"operstatus": "UP",
 			"adminstatus": "UP",
 			"hardwareport": "",
@@ -109,7 +109,7 @@
 		{
 			"name": "4/0",
 			"ifindex": 71,
-			"enabled": false,
+			"enabled": true,
 			"operstatus": "UP",
 			"adminstatus": "UP",
 			"hardwareport": "",
