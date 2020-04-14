@@ -50,15 +50,15 @@ pipeline {
 								string(name: 'DOCKER_IMAGE', value: "${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bf"),
 								string(name: 'DOCKER_IMAGE_TAG', value: "bf-sde-${SDE_VERSION}-linux-${KERNEL_VERSION}-OpenNetworkLinux"),
 							]
-						}
+						}	
 					}
 					stage('Publish') {
 						when { expression { KERNEL_VERSION == '4.14.49' } }
 						steps {
 							sh returnStdout: false, label: "Start publishing ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bf:${SDE_VERSION}-${KERNEL_VERSION}-OpenNetworkLinux", script: ""
 							//build job: "stratum-publish", parameters: [
-							//	string(name: 'DOCKER_IMAGE', value: "${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bf"),
-							//	string(name: 'DOCKER_IMAGE_TAG', value: "${SDE_VERSION}-${KERNEL_VERSION}-OpenNetworkLinux"),
+								//string(name: 'DOCKER_IMAGE', value: "${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bf"),
+								//string(name: 'DOCKER_IMAGE_TAG', value: "${SDE_VERSION}-${KERNEL_VERSION}-OpenNetworkLinux"),
 							//]
 						}
 					}
@@ -67,8 +67,8 @@ pipeline {
 		}
 	}
 	post {
-        failure {
-            slackSend color: 'danger', message: "Test failed: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.RUN_DISPLAY_URL}|Open>)"
-        }
+		failure {
+			slackSend color: 'danger', message: "Test failed: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.RUN_DISPLAY_URL}|Open>)"
+		}
 	}
 }

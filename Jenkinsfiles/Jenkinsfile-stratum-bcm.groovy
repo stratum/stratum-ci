@@ -28,7 +28,7 @@ pipeline {
 				stages {
 					stage("Build") {
 						steps {
-						    sh returnStdout: false, label: "Start building stratum-bcm:${KERNEL_VERSION}", script: ""
+							sh returnStdout: false, label: "Start building stratum-bcm:${KERNEL_VERSION}", script: ""
 							build job: "stratum-bcm-build", parameters: [
 								string(name: 'KERNEL_VERSION', value: "${KERNEL_VERSION}"),
 								string(name: 'DOCKER_REGISTRY_IP', value: "${DOCKER_REGISTRY_IP}"),
@@ -50,8 +50,8 @@ pipeline {
 						steps {
 							sh returnStdout: false, label: "Start publishing ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm:${KERNEL_VERSION}", script: ""
 							//build job: "stratum-publish", parameters: [
-							//	string(name: 'DOCKER_IMAGE', value: "${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm"),
-							//	string(name: 'DOCKER_IMAGE_TAG', value: "${KERNEL_VERSION}"),
+								//string(name: 'DOCKER_IMAGE', value: "${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm"),
+								//string(name: 'DOCKER_IMAGE_TAG', value: "${KERNEL_VERSION}"),
 							//]
 						}
 					}
@@ -60,8 +60,8 @@ pipeline {
 		}
 	}
 	post {
-        failure {
-            slackSend color: 'danger', message: "Test failed: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.RUN_DISPLAY_URL}|Open>)"
-        }
+		failure {
+			slackSend color: 'danger', message: "Test failed: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.RUN_DISPLAY_URL}|Open>)"
+		}
 	}
 }

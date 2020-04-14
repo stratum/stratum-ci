@@ -38,6 +38,6 @@ pipeline {
 					docker run --rm -v ${BAZEL_DISK_CACHE}:/tmp/bazel-disk-cache -v ${WORKSPACE}/stratum:/stratum ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-unit
 				"""
 			}
-		}
+		}	
 	}
 }

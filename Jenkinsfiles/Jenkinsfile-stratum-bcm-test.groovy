@@ -23,11 +23,11 @@ pipeline {
 				step([$class: 'WsCleanup'])
 				script {
 					try {
-                        sh returnStdout: false, label: "Get Test Vectors" , script: """
+						sh returnStdout: false, label: "Get Test Vectors" , script: """
 							git clone https://github.com/stratum/stratum-ci.git 
 						"""
-					    test_config = readYaml file: "${WORKSPACE}/stratum-ci/resources/test-config.yaml"
-					    tv_config_dir = "${WORKSPACE}/stratum-ci/tv_configs"
+						test_config = readYaml file: "${WORKSPACE}/stratum-ci/resources/test-config.yaml"
+						tv_config_dir = "${WORKSPACE}/stratum-ci/tv_configs"
 						stratum_configs_dir = "${WORKSPACE}/stratum-ci/stratum_configs"
 					} catch (err) {
 						echo "Error reading ${WORKSPACE}/stratum-ci/resources/test-config.yaml"
@@ -89,7 +89,7 @@ pipeline {
 												./tvrunner.sh --target ${tv_config_dir}/$SWITCH_NAME/target.pb.txt --portmap ${tv_config_dir}/$SWITCH_NAME/loopback-portmap.pb.txt --template-config ${tv_config_dir}/$SWITCH_NAME/template_config.json --tv-dir ${WORKSPACE}/testvectors/templates/setup --dp-mode loopback --tv-name Get_Loopback_Mode
 												./tvrunner.sh --target ${tv_config_dir}/$SWITCH_NAME/target.pb.txt --portmap ${tv_config_dir}/$SWITCH_NAME/loopback-portmap.pb.txt --template-config ${tv_config_dir}/$SWITCH_NAME/template_config.json --tv-dir ${WORKSPACE}/testvectors/templates/setup --dp-mode loopback --tv-name InsertSendToCPU
 											"""
-										}
+											}
 										stage('Run Test Vectors') {
 											sh returnStdout: false, label: "Run Test Vectors" , script: """
 												cd testvectors-runner
@@ -106,7 +106,6 @@ pipeline {
 												cd testvectors-runner
 												sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "rm -rf $CONFIG_DIR || true"
 												./tvrunner.sh --target ${tv_config_dir}/$SWITCH_NAME/target.pb.txt --portmap ${tv_config_dir}/$SWITCH_NAME/loopback-portmap.pb.txt --template-config ${tv_config_dir}/$SWITCH_NAME/template_config.json --tv-dir ${WORKSPACE}/testvectors/templates/setup --dp-mode loopback --tv-name DeleteSendToCPU
-												
 											"""
 											if( params.PUBLISH == true ) {
 												sh returnStdout: false, label: "Triggering publish job for ${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG}", script: ""

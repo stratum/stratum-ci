@@ -18,7 +18,7 @@ pipeline {
 				cd /var/jenkins
 				docker pull stratumproject/build:build
 				docker build -t ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-unit -f Dockerfile.unit .
-				"""
+				"""		
 			}
 		}
 		stage('Build, Test and Publish') {
@@ -44,13 +44,13 @@ pipeline {
 		}
 	}
 	post {
-	    always {
-	        sh returnStdout: false, label: "Cleanup", script: """
-	        docker rmi -f \$(docker images -f "dangling=true" -q)
-	        """
-	    }
-        failure {
-            step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: "${params.maintainers}", sendToIndividuals: false])
-        }
+		always {
+			sh returnStdout: false, label: "Cleanup", script: """
+				docker rmi -f \$(docker images -f "dangling=true" -q)
+			"""
+		}
+		failure {
+			step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: "${params.maintainers}", sendToIndividuals: false])
+		}
 	}
 }

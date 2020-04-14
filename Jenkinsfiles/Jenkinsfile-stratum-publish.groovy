@@ -16,9 +16,9 @@ pipeline {
 		stage('Publish') {
 			steps {
 				sh returnStdout: false, label: "Start publishing ${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG}", script: """
-				image="stratumproject/"\$(echo $DOCKER_IMAGE | cut -d'/' -f2)
-				docker tag ${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG} \$image:${DOCKER_IMAGE_TAG}
-				docker push \$image:${DOCKER_IMAGE_TAG}
+					image="stratumproject/"\$(echo $DOCKER_IMAGE | cut -d'/' -f2)
+					docker tag ${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG} \$image:${DOCKER_IMAGE_TAG}
+					docker push \$image:${DOCKER_IMAGE_TAG}
 				"""
 			}
 		}
