@@ -1,0 +1,63 @@
+description: "Default chassis config for Edgecore AS7712 32X"
+chassis {
+  platform: PLT_GENERIC_TOMAHAWK
+  name: "Edgecore AS7712 32X"
+}
+nodes {
+  id: 1
+  slot: 1
+  index: 1
+  config_params {
+    vlan_configs {
+      vlan_id: 1
+      block_broadcast: true
+      block_unknown_multicast: true
+      block_unknown_unicast: true
+      disable_l2_learning: true
+    }
+  }
+}
+singleton_ports {
+  id: 50
+  name: "1/0"
+  slot: 1
+  port: 1
+  speed_bps: 100000000000
+  config_params {
+    admin_state: ADMIN_STATE_ENABLED
+  }
+  node: 1
+}
+singleton_ports {
+  id: 54
+  name: "2/0"
+  slot: 1
+  port: 2
+  speed_bps: 100000000000
+  config_params {
+    admin_state: ADMIN_STATE_ENABLED
+  }
+  node: 1
+}
+singleton_ports {
+  id: 58
+  name: "3/0"
+  slot: 1
+  port: 3
+  speed_bps: 100000000000
+  config_params {
+    admin_state: ADMIN_STATE_ENABLED
+  }
+  node: 1
+}
+singleton_ports {
+  id: 62
+  name: "4/0"
+  slot: 1
+  port: 4
+  speed_bps: 100000000000
+  config_params {
+    admin_state: ADMIN_STATE_ENABLED
+  }
+  node: 1
+}
