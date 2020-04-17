@@ -42,7 +42,7 @@ pipeline {
 					axis {
 						name 'SWITCH_NAME'
 						//values 'x86-64-dell-z9100-c2538-r0','x86-64-quanta-ix1-rangeley-r0'
-						values 'x86-64-dell-z9100-c2538-r0'
+						values 'x86-64-dell-z9100-c2538-r0', 'x86-64-accton-as7712-32x-r0'
 					}
 				}
 				stages {
