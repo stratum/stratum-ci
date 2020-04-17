@@ -41,7 +41,7 @@ pipeline {
 				axes {
 					axis {
 						name 'SWITCH_NAME'
-						values 'x86-64-inventec-d5254-r0','x86-64-stordis-bf2556x-1t-r0'
+						values 'x86-64-inventec-d5254-r0','x86-64-stordis-bf2556x-1t-r0','x86-64-accton-wedge100bf-32x-r0'
 					}
 				}
 				stages {
