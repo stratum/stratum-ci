@@ -1,12 +1,4 @@
 switches:
-  tofino-stordis-bf6064x:
-    ip: '127.0.0.1'
-  tofino-wedge100bf-32x-r0:
-    ip: '10.128.13.232'
-  bcm-dell-z9100:
-    ip: '127.0.0.1'
-  bcm-qct-ix1:
-    ip: '10.128.13.112'
   x86-64-accton-wedge100bf-32x-r0:
     ip: '10.128.13.232'
   x86-64-dell-z9100-c2538-r0:
