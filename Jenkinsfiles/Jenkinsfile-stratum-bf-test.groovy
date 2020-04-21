@@ -41,7 +41,7 @@ pipeline {
 				axes {
 					axis {
 						name 'SWITCH_NAME'
-						values 'x86-64-inventec-d5254-r0','x86-64-stordis-bf2556x-1t-r0','x86-64-accton-wedge100bf-32x-r0'
+						values 'x86-64-inventec-d5254-r0','x86-64-stordis-bf2556x-1t-r0','x86-64-accton-wedge100bf-32x-r0','x86-64-stordis-bf6064x-t-r0'
 					}
 				}
 				stages {
@@ -50,6 +50,7 @@ pipeline {
 						environment {
 							SWITCH_CREDS = credentials("${SWITCH_NAME}-credentials")
 							SWITCH_IP = """${test_config.switches["${SWITCH_NAME}"].ip}"""
+							CONFIG_DIR = '/tmp/stratum_configs'
 						}
 						steps {
 							script {
@@ -58,10 +59,12 @@ pipeline {
 										def WORKSPACE = pwd()
 										stage("Start Stratum on ${SWITCH_NAME}") {
 											sh returnStdout: false, label: "Starting Stratum with image ${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG}", script: """
+												sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "mkdir -p $CONFIG_DIR"
+												sshpass -p $SWITCH_CREDS_PSW scp -r ${stratum_configs_dir}/${SWITCH_NAME} $SWITCH_CREDS_USR@$SWITCH_IP:${CONFIG_DIR}
 												sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "tmux kill-session -t CI || true"
 												sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "tmux new -d -s CI || true"
 												sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "tmux send-keys -t CI.0 ENTER 'docker pull ${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG}' ENTER"
-												sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "tmux send-keys -t CI.0 ENTER 'DOCKER_IMAGE=${DOCKER_IMAGE} DOCKER_IMAGE_TAG=${DOCKER_IMAGE_TAG} ./restart-stratum.sh' ENTER"
+												sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "tmux send-keys -t CI.0 ENTER 'DOCKER_IMAGE=${DOCKER_IMAGE} DOCKER_IMAGE_TAG=${DOCKER_IMAGE_TAG} CONFIG_DIR=${CONFIG_DIR} ./restart-stratum.sh' ENTER"
 												sleep 60
 											"""
 										}
@@ -75,9 +78,25 @@ pipeline {
 											"""
 										}
 										stage('Setup Loopback Mode') {
+											script {
+												ports =sh returnStdout: true, label: "Find number of ports", script: """ 
+													sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "/lib/platform-config/current/onl/bin/onlps sfp inventory |wc -l"
+												"""
+												echo ports
+												if (ports.toInteger() == 66) {
+													sh returnStdout: false, label: "Push pipeline config 64" , script: """
+														cd testvectors-runner
+														./tvrunner.sh --target ${tv_config_dir}/$SWITCH_NAME/target.pb.txt --portmap ${tv_config_dir}/$SWITCH_NAME/loopback-portmap.pb.txt --template-config ${tv_config_dir}/$SWITCH_NAME/template_config.json --tv-dir ${WORKSPACE}/testvectors/tofino --dp-mode loopback --tv-name PipelineConfig64
+													"""
+												} else {
+													sh returnStdout: false, label: "Push pipeline config" , script: """
+														cd testvectors-runner
+														./tvrunner.sh --target ${tv_config_dir}/$SWITCH_NAME/target.pb.txt --portmap ${tv_config_dir}/$SWITCH_NAME/loopback-portmap.pb.txt --template-config ${tv_config_dir}/$SWITCH_NAME/template_config.json --tv-dir ${WORKSPACE}/testvectors/tofino --dp-mode loopback --tv-name PipelineConfig
+													"""
+												}
+											}
 											sh returnStdout: false, label: "Setup loopback mode" , script: """
 												cd testvectors-runner
-												./tvrunner.sh --target ${tv_config_dir}/$SWITCH_NAME/target.pb.txt --portmap ${tv_config_dir}/$SWITCH_NAME/loopback-portmap.pb.txt --tv-dir ${WORKSPACE}/testvectors/tofino --tv-name PipelineConfig
 												./tvrunner.sh --target ${tv_config_dir}/$SWITCH_NAME/target.pb.txt --portmap ${tv_config_dir}/$SWITCH_NAME/loopback-portmap.pb.txt --template-config ${tv_config_dir}/$SWITCH_NAME/template_config.json --tv-dir ${WORKSPACE}/testvectors/templates/setup --dp-mode loopback --tv-name Set_Loopback_Mode || true
 												./tvrunner.sh --target ${tv_config_dir}/$SWITCH_NAME/target.pb.txt --portmap ${tv_config_dir}/$SWITCH_NAME/loopback-portmap.pb.txt --template-config ${tv_config_dir}/$SWITCH_NAME/template_config.json --tv-dir ${WORKSPACE}/testvectors/templates/setup --dp-mode loopback --tv-name Get_Loopback_Mode
 												./tvrunner.sh --target ${tv_config_dir}/$SWITCH_NAME/target.pb.txt --portmap ${tv_config_dir}/$SWITCH_NAME/loopback-portmap.pb.txt --template-config ${tv_config_dir}/$SWITCH_NAME/template_config.json --tv-dir ${WORKSPACE}/testvectors/templates/setup --dp-mode loopback --tv-name InsertSendToCPU
