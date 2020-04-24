@@ -20,13 +20,12 @@ pipeline {
 				step([$class: 'WsCleanup'])
 				sh returnStdout: false, label: "Start building stratum-bcm:${KERNEL_VERSION}", script: """
 					git clone https://github.com/stratum/stratum.git
-					cp /var/jenkins/Dockerfile.test ./stratum/stratum/hal/bin/bcm/standalone/docker
-					cp /var/jenkins/build-stratum-bcm-container.sh ./stratum/stratum/hal/bin/bcm/standalone/docker
-					docker pull stratumproject/build:build
 					cd ${WORKSPACE}/stratum/
-					stratum/hal/bin/bcm/standalone/docker/build-stratum-bcm-container.sh  lt-${KERNEL_VERSION}
-					docker tag stratumproject/stratum-bcm:latest ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm:${KERNEL_VERSION}
-					docker push ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm:${KERNEL_VERSION}
+                    bazel build --define bcm_sdk=lt-${KERNEL_VERSION} //stratum/hal/bin/bcm/standalone:stratum_bcm_deb
+                    cp bazel-bin/stratum/hal/bin/bcm/standalone/stratum_bcm_deb.deb stratum/hal/bin/bcm/standalone/docker/stratum_bcm_deb.deb
+                    cd stratum/hal/bin/bcm/standalone/docker
+                    docker build -t ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm:${KERNEL_VERSION} .
+                    docker push ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm:${KERNEL_VERSION}
 				"""
 			}
 		}
