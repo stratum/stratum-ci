@@ -60,8 +60,8 @@ pipeline {
                             stage('Get Test Vectors') {
                                 step([$class: 'WsCleanup'])
                                 sh returnStdout: false, label: "Get Test Vectors" , script: """
-                                    git clone https://github.com/yoooou/testvectors-runner.git -b parametrization
-                                    git clone https://github.com/yoooou/testvectors.git -b parametrization
+                                    git clone https://github.com/stratum/testvectors-runner.git
+                                    git clone https://github.com/stratum/testvectors.git
                                     cd testvectors-runner
                                     sed -i 's/ -ti//g' tvrunner.sh
                                 """
