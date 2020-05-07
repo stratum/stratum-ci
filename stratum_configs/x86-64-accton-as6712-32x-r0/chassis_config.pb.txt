@@ -1,0 +1,64 @@
+description: "Stratum device device:s204"
+chassis {
+  platform: PLT_GENERIC_TRIDENT2
+  name: "asdf"
+}
+nodes {
+  id: 1
+  name: "asdf leaf 2"
+  slot: 1
+  index: 1
+  config_params {
+    vlan_configs {
+      vlan_id: 1
+      disable_l2_learning: true
+      block_unknown_multicast: true
+      block_broadcast: true
+      block_unknown_unicast: true
+    }
+  }
+}
+singleton_ports {
+  id: 5
+  name: "5/0"
+  slot: 1
+  port: 5
+  speed_bps: 40000000000
+  config_params {
+    admin_state: ADMIN_STATE_ENABLED
+  }
+  node: 1
+}
+singleton_ports {
+  id: 6
+  name: "6/0"
+  slot: 1
+  port: 6
+  speed_bps: 40000000000
+  config_params {
+    admin_state: ADMIN_STATE_ENABLED
+  }
+  node: 1
+}
+singleton_ports {
+  id: 7
+  name: "7/0"
+  slot: 1
+  port: 7
+  speed_bps: 40000000000
+  config_params {
+    admin_state: ADMIN_STATE_ENABLED
+  }
+  node: 1
+}
+singleton_ports {
+  id: 8
+  name: "8/0"
+  slot: 1
+  port: 8
+  speed_bps: 40000000000
+  config_params {
+    admin_state: ADMIN_STATE_ENABLED
+  }
+  node: 1
+}
