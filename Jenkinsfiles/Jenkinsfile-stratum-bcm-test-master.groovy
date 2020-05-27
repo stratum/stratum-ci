@@ -4,6 +4,8 @@ TEST_DRIVER: p4-dev
 SWITCH_NAME: x86-64-inventec-d7032q28b-r0
 DOCKER_IMAGE: 10.128.13.253:5000/stratum-bcm
 DOCKER_IMAGE_TAG: 3.16.56
+DEBIAN_PACKAGE_PATH:/var/jenkins
+DEBIAN_PACKAGE_NAME:stratum_bcm_opennsa_deb.deb
 */
 
 def test_config = null
@@ -28,6 +30,8 @@ pipeline {
                         test_config = readYaml file: "${WORKSPACE}/stratum-ci/resources/test-config.yaml"
                         tv_config_dir = "${WORKSPACE}/stratum-ci/tv_configs"
                         stratum_configs_dir = "${WORKSPACE}/stratum-ci/stratum_configs"
+                        resources_dir = "${WORKSPACE}/stratum-ci/resources/bcm/"
+                        install_debian_script = "install_bcm_debian_package.sh"
                     } catch (err) {
                         echo "Error reading ${WORKSPACE}/stratum-ci/resources/test-config.yaml"
                         throw err
@@ -56,6 +60,8 @@ pipeline {
                                 if (params.DEBIAN_PACKAGE_NAME != '' && params.DEBIAN_PACKAGE_PATH != '') {
                                     sh returnStdout: false, label: "Install Stratum Debian Package", script: """
                                         sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "pkill stratum || true"
+                                        sshpass -p $SWITCH_CREDS_PSW scp ${resources_dir}/${install_debian_script} $SWITCH_CREDS_USR@$SWITCH_IP:/tmp
+                                        sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "chmod +x /tmp/${install_debian_script}"
                                         sshpass -p $SWITCH_CREDS_PSW scp ${DEBIAN_PACKAGE_PATH}/${DEBIAN_PACKAGE_NAME} $SWITCH_CREDS_USR@$SWITCH_IP:/tmp
                                         
                                         sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "tmux kill-session -t CI || true"
@@ -64,7 +70,7 @@ pipeline {
                                     """
                                     sh returnStdout: false, label: "Starting Stratum with Debian Package", script: """
                                         sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "tmux send-keys -t CI.0 ENTER 'CONFIG_DIR=${CONFIG_DIR} /tmp/start-stratum.sh' C-m"
-                                        sleep 30
+                                        sleep 60
                                     """
                                 } else if (params.DOCKER_IMAGE != '' && params.DOCKER_IMAGE_TAG != '') {
                                 sh returnStdout: false, label: "Starting Stratum with image ${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG}", script: """
@@ -75,7 +81,7 @@ pipeline {
                                         sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "tmux new -d -s CI || true"
                                         sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "tmux send-keys -t CI.0 ENTER 'docker pull ${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG}' ENTER"
                                         sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "tmux send-keys -t CI.0 ENTER 'DOCKER_IMAGE=${DOCKER_IMAGE} DOCKER_IMAGE_TAG=${DOCKER_IMAGE_TAG} CONFIG_DIR=${CONFIG_DIR} ./start-stratum-container.sh' ENTER"
-                                        sleep 30
+                                        sleep 60
                                     """
                                 } else {
                                     script {
