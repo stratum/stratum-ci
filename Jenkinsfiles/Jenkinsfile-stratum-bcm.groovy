@@ -21,6 +21,11 @@ pipeline {
                         //values '4.9.75', '3.16.56', '4.14.49'
                         values '4.14.49'
                     }
+                    axis {
+                        name 'SDE'
+                        //values '4.9.75', '3.16.56', '4.14.49'
+                        values 'sdklt', 'opennsa'
+                    }
                 }
                 agent {
                     label "${BUILD_NODE}"
@@ -31,6 +36,7 @@ pipeline {
                             sh returnStdout: false, label: "Start building stratum-bcm:${KERNEL_VERSION}", script: ""
                             build job: "stratum-bcm-build", parameters: [
                                 string(name: 'KERNEL_VERSION', value: "${KERNEL_VERSION}"),
+                                string(name: 'SDE', value: "${SDE}"),
                                 string(name: 'DOCKER_REGISTRY_IP', value: "${DOCKER_REGISTRY_IP}"),
                                 string(name: 'DOCKER_REGISTRY_PORT', value: "${DOCKER_REGISTRY_PORT}"),
                             ]
@@ -42,6 +48,9 @@ pipeline {
                             build job: "stratum-bcm-test-combined", parameters: [
                                 string(name: 'DOCKER_IMAGE', value: "${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm"),
                                 string(name: 'DOCKER_IMAGE_TAG', value: "${KERNEL_VERSION}"),
+                                string(name: 'DEBIAN_PACKAGE_PATH', value: "/var/jenkins"),
+                                string(name: 'DEBIAN_PACKAGE_NAME', value: "stratum_bcm_${SDE}_deb.deb"),
+                                string(name: 'SDE', value: "${SDE}")
                             ]
                         }
                     }
