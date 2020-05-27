@@ -1,28 +1,37 @@
 switches:
   x86-64-accton-wedge100bf-32x-r0:
     platform: 'bf'
+    supported_sdks: 
     ip: '10.128.13.232'
   x86-64-dell-z9100-c2538-r0:
     platform: 'bcm'
+    supported_sdks: ['sdklt']
     ip: '10.128.13.113'
   x86-64-inventec-d5254-r0:
     platform: 'bf'
+    supported_sdks: 
     ip: '10.128.13.111'
   x86-64-quanta-ix1-rangeley-r0:
     platform: 'bcm'
+    supported_sdks: ['sdklt']
     ip: '10.128.13.112'
   x86-64-stordis-bf2556x-1t-r0:
     platform: 'bf'
+    supported_sdks: 
     ip: '10.128.13.122'
   x86-64-stordis-bf6064x-t-r0:
     platform: 'bf'
+    supported_sdks: 
     ip: '10.128.13.116'
   x86-64-accton-as7712-32x-r0:
     platform: 'bcm'
+    supported_sdks: ['sdklt','opennsa']
     ip: '10.128.13.241'
   x86-64-inventec-d7032q28b-r0:
     platform: 'bcm'
+    supported_sdks: ['sdklt']
     ip: '10.128.13.115'
   x86-64-accton-as6712-32x-r0:
     platform: 'bcm'
+    supported_sdks: ['opennsa']
     ip: '10.128.13.203'

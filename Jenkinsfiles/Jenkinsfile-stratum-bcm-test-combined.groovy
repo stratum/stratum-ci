@@ -28,7 +28,7 @@ pipeline {
                         sh returnStdout: false, label: "Get Stratum CI repo" , script: """
                             git clone https://github.com/stratum/stratum-ci.git
                         """
-                        test_config = readYaml file: "/var/jenkins/test-config.yaml"
+                        test_config = readYaml file: "${WORKSPACE}/stratum-ci/resources/test-config.yaml"
                     } catch (err) {
                         echo "Error reading test-config.yaml"
                         throw err
