@@ -23,11 +23,14 @@ pipeline {
                     docker pull stratumproject/build:build
                     cd ${WORKSPACE}/stratum/
                     docker build -t opennetworking/mn-stratum -f tools/mininet/Dockerfile .
+                    docker tag opennetworking/mn-stratum ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/mn-stratum
+                    docker push ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/mn-stratum
                 """
                 sh returnStdout: false, label: "Start building $IMAGE_NAME", script: """
                     cd ${WORKSPACE}
                     git clone https://github.com/stratum/testvectors-runner.git
                     cd ${WORKSPACE}/testvectors-runner/
+                    sed -i 's/opennetworkinglab/${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/g' build/bmv2/Dockerfile
                     docker build -t stratumproject/tvrunner:bmv2 -f build/bmv2/Dockerfile .
                     docker tag stratumproject/tvrunner:bmv2 ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/${IMAGE_NAME}
                     docker push ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/${IMAGE_NAME}
