@@ -28,6 +28,7 @@ pipeline {
                         test_config = readYaml file: "${WORKSPACE}/stratum-ci/resources/test-config.yaml"
                         tv_config_dir = "${WORKSPACE}/stratum-ci/tv_configs"
                         stratum_configs_dir = "${WORKSPACE}/stratum-ci/stratum_configs"
+                        stratum_resources_dir = "${WORKSPACE}/stratum-ci/resources/barefoot"
                     } catch (err) {
                         echo "Error reading ${WORKSPACE}/stratum-ci/resources/test-config.yaml"
                         throw err
@@ -40,6 +41,7 @@ pipeline {
                 SWITCH_CREDS = credentials("${SWITCH_NAME}-credentials")
                 SWITCH_IP = """${test_config.switches["${SWITCH_NAME}"].ip}"""
                 CONFIG_DIR = '/tmp/stratum_configs'
+                RESOURCE_DIR = '/tmp/barefoot'
             }
             steps {
                 script {
@@ -47,14 +49,20 @@ pipeline {
                         node("${TEST_DRIVER}") {
                             def WORKSPACE = pwd()
                             stage("Start Stratum on ${SWITCH_NAME}") {
+                                sh returnStdout: false, label: "Copy Config Files", script: """
+                                    sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "mkdir -p $CONFIG_DIR"
+                                    sshpass -p $SWITCH_CREDS_PSW scp -r ${stratum_configs_dir}/${SWITCH_NAME} $SWITCH_CREDS_USR@$SWITCH_IP:${CONFIG_DIR}/${SWITCH_NAME}
+                                """
+                                sh returnStdout: false, label: "Copy Stratum Scripts", script: """
+                                    sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "mkdir -p $CONFIG_DIR"
+                                    sshpass -p $SWITCH_CREDS_PSW scp -r ${stratum_resources_dir} $SWITCH_CREDS_USR@$SWITCH_IP:${RESOURCE_DIR}
+                                """
                                 sh returnStdout: false, label: "Starting Stratum with image ${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG}", script: """
-                                    sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "mkdir -p $CONFIG_DIR/stratum_configs/${SWITCH_NAME}"
-                                    sshpass -p $SWITCH_CREDS_PSW scp -r ${stratum_configs_dir}/${SWITCH_NAME}/* $SWITCH_CREDS_USR@$SWITCH_IP:${CONFIG_DIR}
-                                    sshpass -p $SWITCH_CREDS_PSW scp -r ${stratum_configs_dir}/${SWITCH_NAME}/port_map.json $SWITCH_CREDS_USR@$SWITCH_IP:${CONFIG_DIR}/stratum_configs/$SWITCH_NAME
                                     sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "tmux kill-session -t CI || true"
                                     sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "tmux new -d -s CI || true"
                                     sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "tmux send-keys -t CI.0 ENTER 'docker pull ${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG}' ENTER"
-                                    sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "tmux send-keys -t CI.0 ENTER 'DOCKER_IMAGE=${DOCKER_IMAGE} DOCKER_IMAGE_TAG=${DOCKER_IMAGE_TAG} CONFIG_DIR=${CONFIG_DIR} ./restart-stratum.sh' ENTER"
+                                    sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "tmux send-keys -t CI.0 ENTER 'cd ${RESOURCE_DIR}' ENTER"
+                                    sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "tmux send-keys -t CI.0 ENTER 'DOCKER_IMAGE=${DOCKER_IMAGE} DOCKER_IMAGE_TAG=${DOCKER_IMAGE_TAG} CHASSIS_CONFIG=${CONFIG_DIR}/${SWITCH_NAME}/chassis_config.pb.txt ./restart-stratum.sh' ENTER"
                                     sleep 180
                                 """
                             }
@@ -104,6 +112,7 @@ pipeline {
                                 sh returnStdout: false, label: "Clean up" , script: """
                                     cd testvectors-runner
                                     ./tvrunner.sh --target ${tv_config_dir}/$SWITCH_NAME/target.pb.txt --portmap ${tv_config_dir}/$SWITCH_NAME/loopback-portmap.pb.txt --template-config ${tv_config_dir}/$SWITCH_NAME/template_config.json --tv-dir ${WORKSPACE}/testvectors/templates/setup --dp-mode loopback --tv-name DeleteSendToCPU
+                                    sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "${RESOURCE_DIR}/stop-stratum.sh"                                    
                                 """
                             }
                         }
