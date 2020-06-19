@@ -23,5 +23,5 @@ apt-get --assume-yes remove stratum-bcm-opennsa || true
 apt-get --assume-yes remove stratum-bcm || true
 apt-get --assume-yes install -f /tmp/${DEBIAN_PACKAGE_NAME}
 cp /usr/bin/start-stratum.sh /tmp/start-stratum.sh
-sed -i 's/\/etc\/stratum\/stratum_configs/${CONFIG_DIR}/g' /tmp/start-stratum.sh
-sed -i '/^exec.*/i CONFIG_DIR=${CONFIG_DIR:-\/etc\/stratum\/stratum_configs}' /tmp/start-stratum.sh
+sed -i 's/\/etc\/stratum/${CONFIG_DIR}/g' /tmp/start-stratum.sh
+sed -i '/^exec.*/i CONFIG_DIR=${CONFIG_DIR:-\/etc\/stratum}' /tmp/start-stratum.sh
