@@ -24,13 +24,13 @@ pipeline {
                         sh returnStdout: false, label: "Start building stratum-bcm:${KERNEL_VERSION}", script: """
                             git clone https://github.com/stratum/stratum.git
                             cd ${WORKSPACE}/stratum/
-                            bazel build --define bcm_sdk=lt-${KERNEL_VERSION} //stratum/hal/bin/bcm/standalone:stratum_bcm_deb
+                            bazel build --define bcm_sdk=lt-${KERNEL_VERSION} //stratum/hal/bin/bcm/standalone:stratum_bcm_sdklt_deb
                         """
                         sh returnStdout: false, label: "Start building stratum-bcm:${KERNEL_VERSION}", script: """
-                            cp -f ${WORKSPACE}/stratum/bazel-bin/stratum/hal/bin/bcm/standalone/stratum_bcm_deb.deb /var/jenkins/stratum_bcm_sdklt_deb.deb
+                            cp -f ${WORKSPACE}/stratum/bazel-bin/stratum/hal/bin/bcm/standalone/stratum_bcm_sdklt_deb.deb /var/jenkins/stratum_bcm_sdklt_deb.deb
                         """
                         sh returnStdout: false, label: "Start building stratum-bcm:${KERNEL_VERSION}", script: """
-                            cp ${WORKSPACE}/stratum/bazel-bin/stratum/hal/bin/bcm/standalone/stratum_bcm_deb.deb ${WORKSPACE}/stratum/stratum/hal/bin/bcm/standalone/docker/stratum_bcm_deb.deb
+                            cp ${WORKSPACE}/stratum/bazel-bin/stratum/hal/bin/bcm/standalone/stratum_bcm_sdklt_deb.deb ${WORKSPACE}/stratum/stratum/hal/bin/bcm/standalone/docker/stratum_bcm_sdklt_deb.deb
                             cd ${WORKSPACE}/stratum/stratum/hal/bin/bcm/standalone/docker
                             docker build -t ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm-sdklt:${KERNEL_VERSION} .
                             docker push ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm-sdklt:${KERNEL_VERSION}
@@ -45,7 +45,7 @@ pipeline {
                             cp -f ${WORKSPACE}/stratum/bazel-bin/stratum/hal/bin/bcm/standalone/stratum_bcm_opennsa_deb.deb /var/jenkins/stratum_bcm_opennsa_deb.deb
                         """
                         sh returnStdout: false, label: "Start building stratum-bcm:${KERNEL_VERSION}", script: """
-                            cp ${WORKSPACE}/stratum/bazel-bin/stratum/hal/bin/bcm/standalone/stratum_bcm_opennsa_deb.deb ${WORKSPACE}/stratum/stratum/hal/bin/bcm/standalone/docker/stratum_bcm_deb.deb
+                            cp ${WORKSPACE}/stratum/bazel-bin/stratum/hal/bin/bcm/standalone/stratum_bcm_opennsa_deb.deb ${WORKSPACE}/stratum/stratum/hal/bin/bcm/standalone/docker/stratum_bcm_sdklt_deb.deb
                             cd ${WORKSPACE}/stratum/stratum/hal/bin/bcm/standalone/docker
                             docker build -t ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm-opennsa:${KERNEL_VERSION} .
                             docker push ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm-opennsa:${KERNEL_VERSION}
@@ -59,7 +59,8 @@ pipeline {
                 sh returnStdout: false, label: "Run unit tests for stratum-bcm:${KERNEL_VERSION}", script: """
                     cd ${WORKSPACE}/stratum
                     sed -i '1i build --disk_cache=/tmp/bazel-disk-cache' .bazelrc
-                    docker run --rm -v ${BAZEL_DISK_CACHE}:/tmp/bazel-disk-cache -v ${WORKSPACE}/stratum:/stratum ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-unit
+                    sed -i '1i startup --output_user_root=/tmp/bazel-cache/output-root' .bazelrc
+                    docker run --rm -v ${BAZEL_CACHE_OUTPUT}:/tmp/bazel-cache/output-root -v ${BAZEL_DISK_CACHE}:/tmp/bazel-disk-cache -v ${WORKSPACE}/stratum:/stratum ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-unit
                 """
             }
         }
