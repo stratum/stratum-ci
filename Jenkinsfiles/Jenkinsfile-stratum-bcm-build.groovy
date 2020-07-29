@@ -30,7 +30,7 @@ pipeline {
                             cp -f ${WORKSPACE}/stratum/bazel-bin/stratum/hal/bin/bcm/standalone/stratum_bcm_sdklt_deb.deb /var/jenkins/stratum_bcm_sdklt_deb.deb
                         """
                         sh returnStdout: false, label: "Start building stratum-bcm:${KERNEL_VERSION}", script: """
-                            cp ${WORKSPACE}/stratum/bazel-bin/stratum/hal/bin/bcm/standalone/stratum_bcm_sdklt_deb.deb ${WORKSPACE}/stratum/stratum/hal/bin/bcm/standalone/docker/stratum_bcm_sdklt_deb.deb
+                            cp ${WORKSPACE}/stratum/bazel-bin/stratum/hal/bin/bcm/standalone/stratum_bcm_sdklt_deb.deb ${WORKSPACE}/stratum/stratum/hal/bin/bcm/standalone/docker/stratum_bcm_deb.deb
                             cd ${WORKSPACE}/stratum/stratum/hal/bin/bcm/standalone/docker
                             docker build -t ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm-sdklt:${KERNEL_VERSION} .
                             docker push ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm-sdklt:${KERNEL_VERSION}
@@ -45,7 +45,7 @@ pipeline {
                             cp -f ${WORKSPACE}/stratum/bazel-bin/stratum/hal/bin/bcm/standalone/stratum_bcm_opennsa_deb.deb /var/jenkins/stratum_bcm_opennsa_deb.deb
                         """
                         sh returnStdout: false, label: "Start building stratum-bcm:${KERNEL_VERSION}", script: """
-                            cp ${WORKSPACE}/stratum/bazel-bin/stratum/hal/bin/bcm/standalone/stratum_bcm_opennsa_deb.deb ${WORKSPACE}/stratum/stratum/hal/bin/bcm/standalone/docker/stratum_bcm_sdklt_deb.deb
+                            cp ${WORKSPACE}/stratum/bazel-bin/stratum/hal/bin/bcm/standalone/stratum_bcm_opennsa_deb.deb ${WORKSPACE}/stratum/stratum/hal/bin/bcm/standalone/docker/stratum_bcm_deb.deb
                             cd ${WORKSPACE}/stratum/stratum/hal/bin/bcm/standalone/docker
                             docker build -t ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm-opennsa:${KERNEL_VERSION} .
                             docker push ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm-opennsa:${KERNEL_VERSION}
