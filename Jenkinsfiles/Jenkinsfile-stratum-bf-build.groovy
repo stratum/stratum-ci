@@ -6,6 +6,7 @@ DOCKER_REGISTRY_PORT: 5000
 SDE_VERSION: 8.9.2
 KERNEL_VERSION: 4.14.49
 BAZEL_DISK_CACHE: /home/sdn/bazel-disk-cache
+BAZEL_CACHE_OUTPUT: /home/sdn/.cache/bazel/_bazel_root/cache
 */
 
 pipeline {
@@ -34,7 +35,8 @@ pipeline {
                 sh returnStdout: false, label: "Run unit tests for stratum-bf:bf-sde-${SDE_VERSION}-linux-${KERNEL_VERSION}-OpenNetworkLinux", script: """
                     cd ${WORKSPACE}/stratum/
                     sed -i '1i build --disk_cache=/tmp/bazel-disk-cache' .bazelrc
-                    docker run --rm -v ${BAZEL_DISK_CACHE}:/tmp/bazel-disk-cache -v ${WORKSPACE}/stratum:/stratum ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-unit
+                    sed -i '1i startup --output_user_root=/tmp/bazel-cache/output-root' .bazelrc
+                    docker run --rm -v ${BAZEL_CACHE_OUTPUT}:/tmp/bazel-cache/output-root -v ${BAZEL_DISK_CACHE}:/tmp/bazel-disk-cache -v ${WORKSPACE}/stratum:/stratum ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-unit
                 """
             }
         }
