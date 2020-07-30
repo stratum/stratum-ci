@@ -60,7 +60,7 @@ pipeline {
                     cd ${WORKSPACE}/stratum
                     sed -i '1i build --disk_cache=/tmp/bazel-disk-cache' .bazelrc
                     sed -i '1i startup --output_user_root=/tmp/bazel-cache/output-root' .bazelrc
-                    docker run --rm -v ${BAZEL_CACHE_OUTPUT}:/tmp/bazel-cache/output-root -v ${BAZEL_DISK_CACHE}:/tmp/bazel-disk-cache -v ${WORKSPACE}/stratum:/stratum ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-unit
+                    docker run --rm -v ${BAZEL_DISK_CACHE}:/tmp/bazel-disk-cache -v ${WORKSPACE}/stratum:/stratum ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-unit
                 """
             }
         }
