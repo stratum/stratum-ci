@@ -37,7 +37,7 @@ pipeline {
                         """
                     } else if (SDE == 'opennsa') {
                         sh returnStdout: false, label: "Start building stratum-bcm:${KERNEL_VERSION}", script: """
-                            git clone https://github.com/stratum/stratum.git -b dev/opennsa-wrapper
+                            git clone https://github.com/stratum/stratum.git
                             cd ${WORKSPACE}/stratum/
                             bazel build --define bcm_sdk=lt-${KERNEL_VERSION} //stratum/hal/bin/bcm/standalone:stratum_bcm_opennsa_deb
                         """
