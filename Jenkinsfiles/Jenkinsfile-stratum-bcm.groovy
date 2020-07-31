@@ -23,8 +23,7 @@ pipeline {
                     }
                     axis {
                         name 'SDE'
-                        //values 'sdklt', 'opennsa'
-                        values 'sdklt'
+                        values 'sdklt', 'opennsa'
                     }
                 }
                 agent {
@@ -33,7 +32,7 @@ pipeline {
                 stages {
                     stage("Build") {
                         steps {
-                            sh returnStdout: false, label: "Start building stratum-bcm:${KERNEL_VERSION}", script: ""
+                            sh returnStdout: false, label: "Start building stratum-bcm-${SDE}:${KERNEL_VERSION}", script: ""
                             build job: "stratum-bcm-build", parameters: [
                                 string(name: 'KERNEL_VERSION', value: "${KERNEL_VERSION}"),
                                 string(name: 'SDE', value: "${SDE}"),
