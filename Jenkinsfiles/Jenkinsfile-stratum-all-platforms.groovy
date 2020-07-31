@@ -12,15 +12,6 @@ pipeline {
         timeout(time: 60, unit: 'MINUTES')
     }
     stages {
-        stage('Preparations') {
-            steps {
-                sh returnStdout: false, label: "Preparations", script: """
-                cd /var/jenkins
-                docker pull stratumproject/build:build
-                docker build -t ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-unit -f Dockerfile.unit .
-                """
-            }
-        }
         stage('Build, Test and Publish') {
             matrix {
                 axes {
