@@ -18,7 +18,7 @@ pipeline {
                 axes {
                     axis {
                         name 'SDE_VERSION'
-                        values '8.9.2', '9.0.0'
+                        values '8.9.2', '9.0.0', '9.2.0'
                     }
                     axis {
                         name 'KERNEL_VERSION'
@@ -48,7 +48,7 @@ pipeline {
                             sh returnStdout: false, label: "Start testing ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bf:${SDE_VERSION}-${KERNEL_VERSION}-OpenNetworkLinux", script: ""
                             build job: "stratum-bf-test-combined", parameters: [
                                 string(name: 'DOCKER_IMAGE', value: "${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bf"),
-                                string(name: 'DOCKER_IMAGE_TAG', value: "bf-sde-${SDE_VERSION}-linux-${KERNEL_VERSION}-OpenNetworkLinux"),
+                                string(name: 'DOCKER_IMAGE_TAG', value: "${SDE_VERSION}-${KERNEL_VERSION}-OpenNetworkLinux"),
                             ]
                         }
                     }
@@ -56,10 +56,10 @@ pipeline {
                         when { expression { KERNEL_VERSION == '4.14.49' } }
                         steps {
                             sh returnStdout: false, label: "Start publishing ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bf:${SDE_VERSION}-${KERNEL_VERSION}-OpenNetworkLinux", script: ""
-                            //build job: "stratum-publish", parameters: [
-                                //string(name: 'DOCKER_IMAGE', value: "${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bf"),
-                                //string(name: 'DOCKER_IMAGE_TAG', value: "${SDE_VERSION}-${KERNEL_VERSION}-OpenNetworkLinux"),
-                            //]
+                            build job: "stratum-publish", parameters: [
+                                string(name: 'DOCKER_IMAGE', value: "${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bf"),
+                                string(name: 'DOCKER_IMAGE_TAG', value: "${SDE_VERSION}-${KERNEL_VERSION}-OpenNetworkLinux"),
+                            ]
                         }
                     }
                 }

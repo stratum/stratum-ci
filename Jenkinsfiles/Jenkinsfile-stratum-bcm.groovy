@@ -32,9 +32,8 @@ pipeline {
                 stages {
                     stage("Build") {
                         steps {
-                            sh returnStdout: false, label: "Start building stratum-bcm-${SDE}:${KERNEL_VERSION}", script: ""
+                            sh returnStdout: false, label: "Start building stratum-bcm:${SDE}", script: ""
                             build job: "stratum-bcm-build", parameters: [
-                                string(name: 'KERNEL_VERSION', value: "${KERNEL_VERSION}"),
                                 string(name: 'SDE', value: "${SDE}"),
                                 string(name: 'DOCKER_REGISTRY_IP', value: "${DOCKER_REGISTRY_IP}"),
                                 string(name: 'DOCKER_REGISTRY_PORT', value: "${DOCKER_REGISTRY_PORT}"),
@@ -43,10 +42,10 @@ pipeline {
                     }
                     stage('Test') {
                         steps {
-                            sh returnStdout: false, label: "Start testing ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm-${SDE}:${KERNEL_VERSION}", script: ""
+                            sh returnStdout: false, label: "Start testing ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm:${SDE}", script: ""
                             build job: "stratum-bcm-test-combined", parameters: [
-                                string(name: 'DOCKER_IMAGE', value: "${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm-${SDE}"),
-                                string(name: 'DOCKER_IMAGE_TAG', value: "${KERNEL_VERSION}"),
+                                string(name: 'DOCKER_IMAGE', value: "${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm"),
+                                string(name: 'DOCKER_IMAGE_TAG', value: "${SDE}"),
                                 string(name: 'DEBIAN_PACKAGE_PATH', value: "/var/jenkins"),
                                 string(name: 'DEBIAN_PACKAGE_NAME', value: "stratum_bcm_${SDE}_deb.deb"),
                                 string(name: 'SDE', value: "${SDE}")
@@ -54,13 +53,12 @@ pipeline {
                         }
                     }
                     stage('Publish') {
-                        when { expression { KERNEL_VERSION == '3.16.56' } }
                         steps {
-                            sh returnStdout: false, label: "Start publishing ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm:${KERNEL_VERSION}", script: ""
-                            //build job: "stratum-publish", parameters: [
-                                //string(name: 'DOCKER_IMAGE', value: "${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm"),
-                                //string(name: 'DOCKER_IMAGE_TAG', value: "${KERNEL_VERSION}"),
-                            //]
+                            sh returnStdout: false, label: "Start publishing ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm:${SDE}", script: ""
+                            build job: "stratum-publish", parameters: [
+                                string(name: 'DOCKER_IMAGE', value: "${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm"),
+                                string(name: 'DOCKER_IMAGE_TAG', value: "${SDE}"),
+                            ]
                         }
                     }
                 }
