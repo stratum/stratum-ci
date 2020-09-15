@@ -103,8 +103,8 @@ pipeline {
                             stage('Setup Loopback Mode') {
                                 sh returnStdout: false, label: "Push pipeline config" , script: """
                                     cd testvectors-runner
-                                    env IMAGE_NAME={TV_RUNNER_IMAGE} ./tvrunner.sh --target ${tv_dir}/target.pb.txt --portmap ${tv_dir}/portmap.pb.txt --tv-dir ${tv_dir} --dp-mode loopback --tv-name PipelineConfig
-                                    env IMAGE_NAME={TV_RUNNER_IMAGE} ./tvrunner.sh --target ${tv_dir}/target.pb.txt --portmap ${tv_dir}/portmap.pb.txt --template-config ${ptf_configs_dir}/${SWITCH_NAME}/tv-template.json --dp-mode loopback --tv-dir ${ptf_tv_resources_dir} --tv-name Set_Loopback_Mode
+                                    IMAGE_NAME=${TV_RUNNER_IMAGE} ./tvrunner.sh --target ${tv_dir}/target.pb.txt --portmap ${tv_dir}/portmap.pb.txt --tv-dir ${tv_dir} --dp-mode loopback --tv-name PipelineConfig
+                                    IMAGE_NAME=${TV_RUNNER_IMAGE} ./tvrunner.sh --target ${tv_dir}/target.pb.txt --portmap ${tv_dir}/portmap.pb.txt --template-config ${ptf_configs_dir}/${SWITCH_NAME}/tv-template.json --dp-mode loopback --tv-dir ${ptf_tv_resources_dir} --tv-name Set_Loopback_Mode
                                 """
                             }
                             stage('Run Test Vectors') {
@@ -112,7 +112,7 @@ pipeline {
 									sh "cd testvectors-runner"
 									for (test_name in test_list.toSet()) {
 										sh returnStdout: false, label:"Run ${test_name}", script: """
-											env IMAGE_NAME={TV_RUNNER_IMAGE} ${WORKSPACE}/testvectors-runner/tvrunner.sh --dp-mode loopback --match-type in --target ${tv_dir}/target.pb.txt --portmap ${tv_dir}/portmap.pb.txt --tv-dir ${tv_dir}/${test_name}
+											IMAGE_NAME=${TV_RUNNER_IMAGE} ${WORKSPACE}/testvectors-runner/tvrunner.sh --dp-mode loopback --match-type in --target ${tv_dir}/target.pb.txt --portmap ${tv_dir}/portmap.pb.txt --tv-dir ${tv_dir}/${test_name}
 										"""
 									}
                                 }
