@@ -7,8 +7,8 @@
   - FabricIPv4MplsGroupTest
   - FabricMplsSegmentRoutingTest
   - FabricArpPacketOutTest
-  - FabricArpShortIpPacketOutTest
-  - FabricArpLongIpPacketOutTest
+  - FabricShortIpPacketOutTest
+  - FabricLongIpPacketOutTest
   - FabricArpPacketInTest
   - FabricLongIpPacketInTest
   - FabricShortIpPacketInTest
