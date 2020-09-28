@@ -56,7 +56,7 @@ pipeline {
                     cp /var/jenkins/ptf-tv/run ${WORKSPACE}/ptf/run/tv
                     cp ${ptf_configs_dir}/${SWITCH_NAME}/port_map.json ${WORKSPACE}/ptf/tests/ptf
                     cd ${WORKSPACE}/ptf
-                    run/tv/run fabric PORTMAP=port_map.json GRPCADDR=${SWITCH_IP}:${SWITCH_PORT}
+                    run/tv/run fabric PORTMAP=port_map.json GRPCADDR=${SWITCH_IP}:${SWITCH_PORT} CPUPORT=192
                 """
             }
         }
@@ -112,7 +112,9 @@ pipeline {
 									sh "cd testvectors-runner"
 									for (test_name in test_list.toSet()) {
 										sh returnStdout: false, label:"Run ${test_name}", script: """
-											IMAGE_NAME=${TV_RUNNER_IMAGE} ${WORKSPACE}/testvectors-runner/tvrunner.sh --dp-mode loopback --match-type in --target ${tv_dir}/target.pb.txt --portmap ${tv_dir}/portmap.pb.txt --tv-dir ${tv_dir}/${test_name}
+											IMAGE_NAME=${TV_RUNNER_IMAGE} ${WORKSPACE}/testvectors-runner/tvrunner.sh --dp-mode loopback --match-type in --target ${tv_dir}/target.pb.txt --portmap ${tv_dir}/portmap.pb.txt --tv-dir ${tv_dir}/${test_name}/setup
+											IMAGE_NAME=${TV_RUNNER_IMAGE} ${WORKSPACE}/testvectors-runner/tvrunner.sh --dp-mode loopback --match-type in --target ${tv_dir}/target.pb.txt --portmap ${tv_dir}/portmap.pb.txt --tv-dir ${tv_dir}/${test_name} --tv-name ${test_name}.*
+											IMAGE_NAME=${TV_RUNNER_IMAGE} ${WORKSPACE}/testvectors-runner/tvrunner.sh --dp-mode loopback --match-type in --target ${tv_dir}/target.pb.txt --portmap ${tv_dir}/portmap.pb.txt --tv-dir ${tv_dir}/${test_name}/teardown
 										"""
 									}
                                 }
