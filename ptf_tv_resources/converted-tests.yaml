@@ -6,7 +6,6 @@
   - FabricIPv4MulticastTest
   - FabricIPv4UnicastTest
   - FabricIPv4UnicastDefaultRouteTest
-  - FabricIPv4UnicastGroupTest
   - FabricIPv4UnicastGtpPassthroughTest
   - FabricIPv4MplsGroupTest
   - FabricMplsSegmentRoutingTest
