@@ -94,7 +94,7 @@ pipeline {
                             stage('Get Test Vectors Runner') {
                                 step([$class: 'WsCleanup'])
                                 sh returnStdout: false, label: "Get Test Vectors Runner" , script: """
-                                    git clone https://github.com/stratum/testvectors-runner.git -b support-fabric-tna
+                                    git clone https://github.com/abhilashendurthi/testvectors-runner.git -b support-fabric-tna-results
                                     cd testvectors-runner
                                     docker build -t ${TV_RUNNER_IMAGE} -f build/test/Dockerfile .
                                     sed -i 's/ -ti//g' tvrunner.sh
@@ -109,14 +109,43 @@ pipeline {
                             }
                             stage('Run Test Vectors') {
                                 script {
-									sh "cd testvectors-runner"
-									for (test_name in test_list.toSet()) {
-										sh returnStdout: false, label:"Run ${test_name}", script: """
-											IMAGE_NAME=${TV_RUNNER_IMAGE} ${WORKSPACE}/testvectors-runner/tvrunner.sh --dp-mode loopback --match-type in --target ${tv_dir}/target.pb.txt --portmap ${tv_dir}/portmap.pb.txt --tv-dir ${tv_dir}/${test_name}/setup
-											IMAGE_NAME=${TV_RUNNER_IMAGE} ${WORKSPACE}/testvectors-runner/tvrunner.sh --dp-mode loopback --match-type in --target ${tv_dir}/target.pb.txt --portmap ${tv_dir}/portmap.pb.txt --tv-dir ${tv_dir}/${test_name} --tv-name ${test_name}.*
-											IMAGE_NAME=${TV_RUNNER_IMAGE} ${WORKSPACE}/testvectors-runner/tvrunner.sh --dp-mode loopback --match-type in --target ${tv_dir}/target.pb.txt --portmap ${tv_dir}/portmap.pb.txt --tv-dir ${tv_dir}/${test_name}/teardown
-										"""
-									}
+                                    try {
+                                        sh "mkdir -p ${WORKSPACE}/testvectors-runner/results"
+                                        for (test_name in test_list.toSet()) {
+                                            sh returnStdout: false, label:"Run ${test_name}", script: """
+                                                IMAGE_NAME=${TV_RUNNER_IMAGE} ${WORKSPACE}/testvectors-runner/tvrunner.sh --dp-mode loopback --match-type in --target ${tv_dir}/target.pb.txt --portmap ${tv_dir}/portmap.pb.txt --tv-dir ${tv_dir}/${test_name}/setup
+                                                IMAGE_NAME=${TV_RUNNER_IMAGE} ${WORKSPACE}/testvectors-runner/tvrunner.sh --dp-mode loopback --match-type in --target ${tv_dir}/target.pb.txt --portmap ${tv_dir}/portmap.pb.txt --tv-dir ${tv_dir}/${test_name} --tv-name ${test_name}.* --result-dir ${WORKSPACE}/testvectors-runner/results --result-file ${test_name}
+                                                IMAGE_NAME=${TV_RUNNER_IMAGE} ${WORKSPACE}/testvectors-runner/tvrunner.sh --dp-mode loopback --match-type in --target ${tv_dir}/target.pb.txt --portmap ${tv_dir}/portmap.pb.txt --tv-dir ${tv_dir}/${test_name}/teardown
+                                            """
+                                        }
+                                        currentBuild.result = 'SUCCESS'
+                                    } catch(err) {
+                                        currentBuild.result = 'FAILURE'
+                                    } finally {
+                                        script {
+                                            sh label: "Generate Results", script: """
+                                                [ -d "omec-project-ci" ] || git clone https://github.com/omec-project/omec-project-ci
+                                                /var/jenkins/ptf-tv/process-csv.sh ${WORKSPACE}/testvectors-runner/results
+                                            """
+                                            // Get csv files
+                                            csv_list = sh returnStdout: true, script: """
+                                                cd ${WORKSPACE}/testvectors-runner/results
+                                                ls fabric_tna_hw_results*.csv
+                                            """
+          
+                                            csv_list = csv_list.trim()
+                                            for( String csv_name : csv_list.split() ) {
+                                                sh label: "Copy ${csv_name} to Data Directory", script : """
+                                                # Add build number to CSV
+                                                Rscript omec-project-ci/metrics/common/add_entry_to_csv.R build ${BUILD_NUMBER} ${WORKSPACE}/testvectors-runner/results/${csv_name}
+
+                                                # Copy to data directory
+                                                cp ${WORKSPACE}/testvectors-runner/results/${csv_name} ${PLOT_DATA}/consolidated_results/
+                                                """
+                                            }
+                                            archiveArtifacts artifacts: "testvectors-runner/results/tv_result*.csv", allowEmptyArchive: true
+                                        }
+                                    }
                                 }
                             }
                             stage("Cleanup") {
@@ -133,4 +162,18 @@ pipeline {
             }
         }
 	}
+    post {
+        always {
+            script {
+                sh label: "Clone omec-project-ci", script: """
+                [ -d "omec-project-ci" ] || git clone https://github.com/omec-project/omec-project-ci
+                """
+                sh label: "Generate Plot", script: """
+                mkdir plots
+                Rscript omec-project-ci/metrics/func/func.R ${PLOT_DATA}/func_config.json ${PLOT_DATA}/consolidated_results/ plots/plot.png
+                """
+                archiveArtifacts artifacts: "plots/*", allowEmptyArchive: true
+            }
+        }
+    }
 }
