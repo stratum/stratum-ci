@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<flow-definition plugin="workflow-job">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
+    <script>// Copyright 2017-present Open Networking Foundation
+//
+// SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
+
+/* docker-publish pipeline */
+pipeline {
+
+  /* executor is determined by JJB */
+  agent {
+    label &quot;${params.buildNode}&quot;
+  }
+  stages {
+
+    stage('checkout') {
+      steps {
+        checkout([
+          $class: 'GitSCM',
+          userRemoteConfigs: [[ url: &quot;${params.gitUrl}&quot;, ]],
+          branches: [[ name: &quot;${params.gitRef}&quot;, ]],
+          extensions: [
+            [$class: 'WipeWorkspace'],
+            [$class: 'RelativeTargetDirectory', relativeTargetDir: &quot;${params.projectName}&quot;],
+            [$class: 'CloneOption', depth: 0, noTags: false, reference: '', shallow: false],
+            [$class: 'SubmoduleOption', recursiveSubmodules: true],
+          ],
+        ])
+        script {
+          git_tags = sh(script:&quot;cd $projectName; git tag -l --points-at HEAD&quot;, returnStdout: true).trim()
+        }
+      }
+    }
+
+    stage('build'){
+      steps {
+        sh( script: &quot;&quot;&quot;
+          #!/usr/bin/env bash
+          set -eu -o pipefail
+
+          # checked out in a subdir so the log can be in WORKSPACE
+          cd &quot;$projectName&quot;
+
+          # set registry/repository variables
+          export DOCKER_REGISTRY=&quot;$dockerRegistry&quot;
+          export DOCKER_REPOSITORY=&quot;$dockerRepo/&quot;
+
+          # Build w/branch
+          echo &quot;Building image with branch&quot;
+          $extraEnvironmentVars DOCKER_TAG=&quot;$branchName&quot; make docker-build 2&gt;&amp;1 | tee &quot;$WORKSPACE/docker-build.log&quot;
+
+          # Build w/tags if they exist
+          if [ -n &quot;$git_tags&quot; ]
+          echo &quot;Tags found in git, building:&quot;
+          echo &quot;$git_tags&quot;
+
+          then
+            for tag in $git_tags
+            do
+              # remove leading 'v' on funky golang tags
+              clean_tag=\$(echo \$tag | sed 's/^v//g')
+              echo &quot;Building image with tag: \$clean_tag (should reuse cached layers)&quot;
+              $extraEnvironmentVars DOCKER_TAG=&quot;\$clean_tag&quot; make docker-build
+            done
+          fi
+        &quot;&quot;&quot;)
+      }
+    }
+
+    stage('push'){
+      steps {
+        script {
+          withDockerRegistry([credentialsId: 'docker-artifact-push-credentials']) {
+            sh( script:&quot;&quot;&quot;
+              #!/usr/bin/env bash
+              set -eu -o pipefail
+
+              # checked out in a subdir so the log can be in WORKSPACE
+              cd &quot;$projectName&quot;
+
+              # set registry/repository variables
+              export DOCKER_REGISTRY=&quot;$dockerRegistry&quot;
+              export DOCKER_REPOSITORY=&quot;$dockerRepo/&quot;
+
+              # Push w/branch
+              echo &quot;Pushing image with branch&quot;
+              $extraEnvironmentVars DOCKER_TAG=&quot;$branchName&quot; make docker-push 2&gt;&amp;1 | tee &quot;$WORKSPACE/docker-push.log&quot;
+
+              # Push w/tags if they exist
+              if [ -n &quot;$git_tags&quot; ]
+              echo &quot;Tags found in git, pushing:&quot;
+              echo &quot;$git_tags&quot;
+              then
+                for tag in $git_tags
+                do
+                  # remove leading 'v' on funky golang tags
+                  clean_tag=\$(echo \$tag | sed 's/^v//g')
+                  echo &quot;Pushing image with tag: \$clean_tag (should reuse cached layers)&quot;
+                  $extraEnvironmentVars DOCKER_TAG=&quot;\$clean_tag&quot; make docker-push
+                done
+              fi
+            &quot;&quot;&quot;)
+          }
+        }
+      }
+    }
+  }
+
+  post {
+    always {
+      archiveArtifacts artifacts: 'docker-*.log', fingerprint: true
+      deleteDir()
+    }
+    failure {
+      step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: &quot;${params.maintainers}&quot;, sendToIndividuals: false])
+    }
+  }
+}
+</script>
+    <sandbox>false</sandbox>
+  </definition>
+  <actions/>
+  <description>Created by docker-publish-github job-template from stratum-ci/jjb/docker-publish-github.yaml
+&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <concurrentBuild>true</concurrentBuild>
+  <canRoam>true</canRoam>
+  <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>60</daysToKeep>
+        <numToKeep>-1</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>30</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github">
+      <projectUrl>https://github.com/omec-project/sample</projectUrl>
+      <displayName/>
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>buildNode</name>
+          <description>Name of the Jenkins node to run the job on</description>
+          <defaultValue>ubuntu16.04-basebuild-4c-8g</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>gitUrl</name>
+          <description>URL to the git repo (on github)</description>
+          <defaultValue>https://github.com/omec-project/sample</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>gitRef</name>
+          <description>git ref to build (commit hash or tag)</description>
+          <defaultValue>master</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>projectName</name>
+          <description>Name of the project in the Github Organization</description>
+          <defaultValue>sample</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>branchName</name>
+          <description>Branch of the project - always master in the GitHub case</description>
+          <defaultValue>master</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>dockerRepo</name>
+          <description>Docker repository to push to ('opencord', 'xosproject', etc.)</description>
+          <defaultValue>omecproject</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>dockerRegistry</name>
+          <description>Docker registry to push to (blank for DockerHub)</description>
+          <defaultValue/>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>dockerArchList</name>
+          <description>List of architectures to build containers on, pipe separated (nonfunctional currently)</description>
+          <defaultValue>x86_64</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>maintainers</name>
+          <description>The person that sould be notified if this job fails</description>
+          <defaultValue>zdw@opennetworking.org</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>extraEnvironmentVars</name>
+          <description>Provide extra environment variables to the build</description>
+          <defaultValue/>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <publishers/>
+  <buildWrappers>
+    <com.michelin.cio.hudson.plugins.maskpasswords.MaskPasswordsBuildWrapper/>
+    <hudson.plugins.build__timeout.BuildTimeoutWrapper>
+      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+        <timeoutMinutes>{build-timeout}</timeoutMinutes>
+      </strategy>
+      <operationList>
+        <hudson.plugins.build__timeout.operations.FailOperation/>
+      </operationList>
+      <timeoutEnvVar>BUILD_TIMEOUT</timeoutEnvVar>
+    </hudson.plugins.build__timeout.BuildTimeoutWrapper>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper/>
+    <com.cloudbees.jenkins.plugins.sshagent.SSHAgentBuildWrapper>
+      <user>{jenkins-ssh-credential}</user>
+      <ignoreMissing>false</ignoreMissing>
+    </com.cloudbees.jenkins.plugins.sshagent.SSHAgentBuildWrapper>
+    <org.jenkinsci.plugins.configfiles.buildwrapper.ConfigFileBuildWrapper plugin="config-file-provider">
+      <managedFiles>
+        <org.jenkinsci.plugins.configfiles.buildwrapper.ManagedFile>
+          <fileId>known_hosts</fileId>
+          <targetLocation>$HOME/.ssh/known_hosts</targetLocation>
+          <variable/>
+          <replaceTokens>false</replaceTokens>
+        </org.jenkinsci.plugins.configfiles.buildwrapper.ManagedFile>
+      </managedFiles>
+    </org.jenkinsci.plugins.configfiles.buildwrapper.ConfigFileBuildWrapper>
+  </buildWrappers>
+</flow-definition>
