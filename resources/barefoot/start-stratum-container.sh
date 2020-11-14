@@ -30,9 +30,8 @@ fi
 
 LOG_DIR=${LOG_DIR:-/var/log}
 SDE_VERSION=${SDE_VERSION:-9.0.0}
-KERNEL_VERSION=$(uname -r)
 DOCKER_IMAGE=${DOCKER_IMAGE:-stratumproject/stratum-bf}
-DOCKER_IMAGE_TAG=${DOCKER_IMAGE_TAG:-$SDE_VERSION-$KERNEL_VERSION}
+DOCKER_IMAGE_TAG=${DOCKER_IMAGE_TAG:-$SDE_VERSION}
 
 docker run -it --rm --privileged \
     --name stratum \
