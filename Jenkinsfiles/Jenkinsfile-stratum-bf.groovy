@@ -18,12 +18,7 @@ pipeline {
                 axes {
                     axis {
                         name 'SDE_VERSION'
-                        values '8.9.2', '9.0.0', '9.2.0'
-                    }
-                    axis {
-                        name 'KERNEL_VERSION'
-                        //values '3.16.56', '4.9.75', '4.14.49'
-                        values '4.14.49'
+                        values '9.1.0', '9.2.0', '9.3.0'
                     }
                 }
                 agent {
@@ -31,34 +26,30 @@ pipeline {
                 }
                 stages {
                     stage("Build") {
-                        when { expression { KERNEL_VERSION == '4.14.49' } }
                         steps {
-                            sh returnStdout: false, label: "Start building stratum-bf:${SDE_VERSION}-${KERNEL_VERSION}-OpenNetworkLinux", script: ""
+                            sh returnStdout: false, label: "Start building stratum-bf:${SDE_VERSION}", script: ""
                             build job: "stratum-bf-build", parameters: [
                                 string(name: 'SDE_VERSION', value: "${SDE_VERSION}"),
-                                string(name: 'KERNEL_VERSION', value: "${KERNEL_VERSION}"),
                                 string(name: 'DOCKER_REGISTRY_IP', value: "${DOCKER_REGISTRY_IP}"),
                                 string(name: 'DOCKER_REGISTRY_PORT', value: "${DOCKER_REGISTRY_PORT}"),
                             ]
                         }
                     }
                     stage('Test') {
-                        when { expression { KERNEL_VERSION == '4.14.49' } }
                         steps {
-                            sh returnStdout: false, label: "Start testing ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bf:${SDE_VERSION}-${KERNEL_VERSION}-OpenNetworkLinux", script: ""
+                            sh returnStdout: false, label: "Start testing ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bf:${SDE_VERSION}", script: ""
                             build job: "stratum-bf-test-combined", parameters: [
                                 string(name: 'DOCKER_IMAGE', value: "${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bf"),
-                                string(name: 'DOCKER_IMAGE_TAG', value: "${SDE_VERSION}-${KERNEL_VERSION}-OpenNetworkLinux"),
+                                string(name: 'DOCKER_IMAGE_TAG', value: "${SDE_VERSION}"),
                             ]
                         }
                     }
                     stage('Publish') {
-                        when { expression { KERNEL_VERSION == '4.14.49' } }
                         steps {
-                            sh returnStdout: false, label: "Start publishing ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bf:${SDE_VERSION}-${KERNEL_VERSION}-OpenNetworkLinux", script: ""
+                            sh returnStdout: false, label: "Start publishing ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bf:${SDE_VERSION}", script: ""
                             build job: "stratum-publish", parameters: [
                                 string(name: 'DOCKER_IMAGE', value: "${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bf"),
-                                string(name: 'DOCKER_IMAGE_TAG', value: "${SDE_VERSION}-${KERNEL_VERSION}-OpenNetworkLinux"),
+                                string(name: 'DOCKER_IMAGE_TAG', value: "${SDE_VERSION}"),
                             ]
                         }
                     }
