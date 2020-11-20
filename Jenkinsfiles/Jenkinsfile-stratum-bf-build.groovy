@@ -37,11 +37,13 @@ pipeline {
             }
         }
         stage('Push to local registry') {
-            sh returnStdout: false, label: "Push stratum-bf:${SDE_VERSION} to local registry", script: """
-                docker tag stratumproject/stratum-bf:${SDE_VERSION} \
-                    ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bf:${SDE_VERSION}
-                docker push ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bf:${SDE_VERSION}
-            """
+            steps {
+                sh returnStdout: false, label: "Push stratum-bf:${SDE_VERSION} to local registry", script: """
+                    docker tag stratumproject/stratum-bf:${SDE_VERSION} \
+                        ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bf:${SDE_VERSION}
+                    docker push ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bf:${SDE_VERSION}
+                """
+            }
         }
         stage('Unit Test') {
             steps {
