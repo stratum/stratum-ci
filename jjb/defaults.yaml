@@ -42,7 +42,7 @@
     archive-artifacts: ''
 
     # build timeout (minutes)
-    build-timeout: 20
+    build-timeout: 60
 
     # timed trigger defaults, crontab syntax
     # H = random value hashed by name of job
@@ -56,7 +56,7 @@
     # The most frequently used type of Build Executor. Name is per the LF global-jjb.
     # See build node types under "Cloud > Amazon EC2" at
     #  https://jenkins.opencord.org/configure
-    build-node: ubuntu16.04-basebuild-1c-1g
+    build-node: ubuntu16.04-basebuild-2c-4g
 
     # CORD Gerrit server definition, set in configuration
     gerrit-server-name: 'CORD Gerrit'

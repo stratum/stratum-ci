@@ -16,47 +16,28 @@ pipeline {
     }
     stages {
         stage('Build') {
+	    environment {
+                REGISTRY_CREDS = credentials("aether-registry-credentials")
+            }
             steps {
                 step([$class: 'WsCleanup'])
                 script{
-                    if (SDE == 'sdklt') {
-                        sh returnStdout: false, label: "Start building stratum-bcm_${SDE}_deb", script: """
-                            git clone https://github.com/stratum/stratum.git
-                            cd ${WORKSPACE}/stratum/
-                            bazel build //stratum/hal/bin/bcm/standalone:stratum_bcm_sdklt_deb
-                            cp -f ${WORKSPACE}/stratum/bazel-bin/stratum/hal/bin/bcm/standalone/stratum_bcm_sdklt_deb.deb /var/jenkins/stratum_bcm_sdklt_deb.deb
-                        """
-                        sh returnStdout: false, label: "Start building stratum-bcm:${SDE}", script: """
-                            cp ${WORKSPACE}/stratum/bazel-bin/stratum/hal/bin/bcm/standalone/stratum_bcm_sdklt_deb.deb ${WORKSPACE}/stratum/stratum/hal/bin/bcm/standalone/docker/stratum_bcm_deb.deb
-                            cd ${WORKSPACE}/stratum/stratum/hal/bin/bcm/standalone/docker
-                            docker build -t ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm:${SDE} .
-                            docker push ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm:${SDE}
-                        """
-                    } else if (SDE == 'opennsa') {
-                        sh returnStdout: false, label: "Start building stratum-bcm_${SDE}_deb", script: """
-                            git clone https://github.com/stratum/stratum.git
-                            cd ${WORKSPACE}/stratum/
-                            bazel build //stratum/hal/bin/bcm/standalone:stratum_bcm_opennsa_deb
-                            cp -f ${WORKSPACE}/stratum/bazel-bin/stratum/hal/bin/bcm/standalone/stratum_bcm_opennsa_deb.deb /var/jenkins/stratum_bcm_opennsa_deb.deb
-                        """
-                        sh returnStdout: false, label: "Start building stratum-bcm:${SDE}", script: """
-                            cp ${WORKSPACE}/stratum/bazel-bin/stratum/hal/bin/bcm/standalone/stratum_bcm_opennsa_deb.deb ${WORKSPACE}/stratum/stratum/hal/bin/bcm/standalone/docker/stratum_bcm_deb.deb
-                            cd ${WORKSPACE}/stratum/stratum/hal/bin/bcm/standalone/docker
-                            docker build -t ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm:${SDE} .
-                            docker push ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm:${SDE}
-                        """
-                    }
+                    sh returnStdout: false, label: "Start building stratum-bcm_${SDE}_deb", script: """
+                        git clone https://github.com/stratum/stratum.git
+                        cd ${WORKSPACE}/stratum
+                        sed -i 's/ -ti/ --tty/g' setup_dev_env.sh
+                        ./setup_dev_env.sh -- --name stratum & 
+                        sleep 120
+                        docker exec -t stratum bazel build //stratum/hal/bin/bcm/standalone:stratum_bcm_${SDE}_deb
+                    """
+                    sh returnStdout: false, label: "Start building stratum-bcm:${SDE}", script: """
+                        cp ${WORKSPACE}/stratum/bazel-bin/stratum/hal/bin/bcm/standalone/stratum_bcm_${SDE}_deb.deb ${WORKSPACE}/stratum/stratum/hal/bin/bcm/standalone/docker/stratum_bcm_deb.deb
+                        cd ${WORKSPACE}/stratum/stratum/hal/bin/bcm/standalone/docker
+                        docker build -t ${REGISTRY_URL}/stratum-bcm:${SDE} .
+                        docker login ${REGISTRY_URL} -u ${REGISTRY_CREDS_USR} -p ${REGISTRY_CREDS_PSW}
+                        docker push ${REGISTRY_URL}/stratum-bcm:${SDE}
+                    """
                 }
-            }
-        }
-        stage('Unit Test') {
-            steps {
-                sh returnStdout: false, label: "Run unit tests for stratum-bcm:${SDE}", script: """
-                    cd ${WORKSPACE}/stratum
-                    sed -i '1i build --disk_cache=/tmp/bazel-disk-cache' .bazelrc
-                    sed -i '1i startup --output_user_root=/tmp/bazel-cache/output-root' .bazelrc
-                    docker run --rm -v ${BAZEL_DISK_CACHE}:/tmp/bazel-disk-cache -v ${WORKSPACE}/stratum:/stratum ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-unit
-                """
             }
         }
     }

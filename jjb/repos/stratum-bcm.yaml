@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: 2020 Open Networking Foundation <info@opennetworking.org>
+#
+# SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
+
+# for spgw
+- project:
+    name: stratum-bcm
+    project: '{name}'
+    
+    jobs:
+        - 'stratum-bcm-build':
+            build-timeout: 30
+        - 'stratum-bcm-test':
+            build-timeout: 30
+            

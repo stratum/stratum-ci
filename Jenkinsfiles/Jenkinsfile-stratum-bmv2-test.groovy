@@ -1,6 +1,6 @@
 /*
 Build Parameters
-TEST_DRIVER: p4-dev
+BUILD_NODE: p4-dev
 DOCKER_REGISTRY_IP: 10.128.13.253
 DOCKER_REGISTRY_PORT: 5000
 IMAGE_NAME: tvrunner:bmv2
@@ -10,7 +10,7 @@ def test_config = null
 
 pipeline {
     agent {
-        label "${TEST_DRIVER}"
+        label "${BUILD_NODE}"
     }
     options {
         timeout(time: 60, unit: 'MINUTES')

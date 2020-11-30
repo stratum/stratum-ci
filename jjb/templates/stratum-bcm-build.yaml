@@ -1,0 +1,52 @@
+# SPDX-FileCopyrightText: 2020 Open Networking Foundation <info@opennetworking.org>
+#
+# SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
+
+---
+# GERRIT version of docker-publish
+# generic docker image building + dockerhub publishing tasks
+
+- job-template:
+    id: stratum-bcm-build
+    name: '{id}'
+    description: |
+      Created by {id} job-template from ci-management/jjb/stratum-bcm-build.yaml, script Jenkinsfiles/Jenkinsfile-stratum-bcm-build.groovy
+    properties:
+      - onf-infra-properties:
+          build-days-to-keep: '15'
+          artifact-num-to-keep: '15'
+    wrappers:
+      - onf-infra-rsync-wrappers:
+          build-timeout: '{build-timeout}'
+    parameters:
+      - string:
+          name: BUILD_NODE
+          default: '{build-node}'
+          description: 'Name of the Jenkins build executor to run the job on'
+
+      - string:
+          name: KERNEL_VERSION
+          default: '4.14.49'
+          description: 'Kernel version to build stratum bcm'
+
+      - string:
+          name: SDE
+          default: 'sdklt'
+          description: 'SDE type to build stratum bcm'
+
+      - string:
+          name: REGISTRY_URL
+          default: 'registry.aetherproject.org/stratum-ccp'
+          description: 'Private registry URL'
+
+      - string:
+          name: BAZEL_CACHE_OUTPUT
+          default: '/home/sdn/.cache/bazel/_bazel_root/cache'
+          description: 'Bazel cache output for faster building of stratum unit test'
+
+    project-type: pipeline
+    concurrent: true
+    extraEnvironmentVars: ""
+    sandbox: true
+
+    dsl: !include-raw-escape: ../../Jenkinsfiles/Jenkinsfile-stratum-bcm-build.groovy

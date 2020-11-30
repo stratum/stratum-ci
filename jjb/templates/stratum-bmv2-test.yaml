@@ -1,0 +1,47 @@
+# SPDX-FileCopyrightText: 2020 Open Networking Foundation <info@opennetworking.org>
+#
+# SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
+
+---
+# GERRIT version of docker-publish
+# generic docker image building + dockerhub publishing tasks
+
+- job-template:
+    id: stratum-bmv2-test
+    name: '{id}'
+    description: |
+      Created by {id} job-template from ci-management/jjb/stratum-bmv2-test.yaml, script Jenkinsfiles/Jenkinsfile-stratum-bmv2-test.groovy
+    properties:
+      - onf-infra-properties:
+          build-days-to-keep: '15'
+          artifact-num-to-keep: '15'
+    wrappers:
+      - onf-infra-rsync-wrappers:
+          build-timeout: '{build-timeout}'
+    parameters:
+      - string:
+          name: BUILD_NODE
+          default: '{build-node}'
+          description: 'Name of the Jenkins build executor to run the job on'
+
+      - string:
+          name: DOCKER_REGISTRY_IP
+          default: '54.245.150.45'
+          description: 'Private registry IP'
+
+      - string:
+          name: DOCKER_REGISTRY_PORT
+          default: '5000'
+          description: 'Private registry port'
+
+      - string:
+          name: IMAGE_NAME
+          default: 'tvrunner:bmv2'
+          description: 'Docker image to be build'
+
+    project-type: pipeline
+    concurrent: true
+    extraEnvironmentVars: ""
+    sandbox: true
+
+    dsl: !include-raw-escape: ../../Jenkinsfiles/Jenkinsfile-stratum-bmv2-test.groovy
