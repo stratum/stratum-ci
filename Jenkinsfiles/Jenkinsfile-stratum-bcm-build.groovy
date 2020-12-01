@@ -34,7 +34,7 @@ pipeline {
                         cp ${WORKSPACE}/stratum/bazel-bin/stratum/hal/bin/bcm/standalone/stratum_bcm_${SDE}_deb.deb ${WORKSPACE}/stratum/stratum/hal/bin/bcm/standalone/docker/stratum_bcm_deb.deb
                         cd ${WORKSPACE}/stratum/stratum/hal/bin/bcm/standalone/docker
                         docker build -t ${REGISTRY_URL}/stratum-bcm:${SDE} .
-                        docker login ${REGISTRY_URL} -u ${REGISTRY_CREDS_USR} -p ${REGISTRY_CREDS_PSW}
+                        docker login ${REGISTRY_URL} -u $REGISTRY_CREDS_USR -p $REGISTRY_CREDS_PSW
                         docker push ${REGISTRY_URL}/stratum-bcm:${SDE}
                     """
                 }

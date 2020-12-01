@@ -10,4 +10,6 @@
     jobs:
         - 'stratum-bf-build':
             build-timeout: 30
+        - 'stratum-bf-test':
+            build-timeout: 30
             
