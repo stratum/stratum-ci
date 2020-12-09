@@ -1,6 +1,6 @@
 description: "Chassis config"
 chassis {
-  platform: PLT_P4_SOFT_SWITCH
+  platform: PLT_GENERIC_BAREFOOT_TOFINO
   name: "Stordis BF6064X"
 }
 nodes {
