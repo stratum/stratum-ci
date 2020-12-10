@@ -1,0 +1,58 @@
+# SPDX-FileCopyrightText: 2020 Open Networking Foundation <info@opennetworking.org>
+#
+# SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
+
+---
+# GERRIT version of docker-publish
+# generic docker image building + dockerhub publishing tasks
+
+- job-template:
+    id: stratum-helm-chart-lint
+    name: '{id}'
+    description: |
+      <!-- Managed by Jenkins Job Builder -->
+      Created by {id} job-template from ci-management/jjb/stratum-helm-chart-lint.yaml, script Jenkinsfiles/Jenkinsfile-stratum-helm-charts-lint.groovy
+    properties:
+      - onf-infra-properties:
+          build-days-to-keep: '15'
+          artifact-num-to-keep: '15'
+      - github:
+           url: 'https://github.com/stratum/stratum-helm-charts'
+    parameters:
+      - string:
+          name: BUILD_NODE
+          default: '{build-node}'
+          description: 'Name of the Jenkins build executor to run the job on'
+      - string:
+          name: ghprbPullId
+          default: '$ghprbPullId'
+          description: 'Pull request number to fetch changes from. Leave blank to run manually.'
+      - string:
+          name: branch
+          default: '$ghprbTargetBranch'
+          description: 'Branch to run. Only used when manually run.'
+      - string:
+          name: ghprbGhRepository
+          default: 'stratum/stratum-helm-charts'
+          description: 'Repository of the repository.'
+      - string:
+          name: project
+          default: 'stratum-helm-charts'
+          description: 'Repository of the project.'
+    triggers:
+      - github
+      - github-pull-request:
+          github-hooks: true
+          cancel-builds-on-update: true
+          auto-close-on-fail: false
+          only-trigger-phrase: false
+          status-context: 'Helm Lint'
+          permit-all: true
+          org-list:
+            - 'stratum'
+          allow-whitelist-orgs-as-admins: true
+
+    project-type: pipeline
+    concurrent: false
+
+    dsl: !include-raw-escape: ../../Jenkinsfiles/Jenkinsfile-stratum-helm-charts-lint.groovy

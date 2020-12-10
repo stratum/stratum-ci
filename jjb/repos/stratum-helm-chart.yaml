@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: 2020 Open Networking Foundation <info@opennetworking.org>
+#
+# SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
+
+# for spgw
+- project:
+    name: stratum-helm-chart
+    project: '{name}'
+
+    jobs:
+        - 'stratum-helm-chart-lint':
+            build-timeout: 30
