@@ -1,15 +1,12 @@
-# SPDX-FileCopyrightText: 2020 Open Networking Foundation <info@opennetworking.org>
-#
-# SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
-
 ---
-# Job to run TestVectors on given switch
+# GERRIT version of docker-publish
+# generic docker image building + dockerhub publishing tasks
 
 - job-template:
-    id: stratum-bcm-test
+    id: fabric-tna-hardware
     name: '{id}'
     description: |
-      Created by {id} job-template from ci-management/jjb/stratum-bcm-test.yaml, script Jenkinsfiles/Jenkinsfile-stratum-bcm-test-master.groovy
+      Created by {id} job-template from ci-management/jjb/favric-tna-hardware.yaml, script Jenkinsfiles/Jenkinsfile-fabric-tna.groovy
     properties:
       - onf-infra-properties:
           build-days-to-keep: '15'
@@ -25,7 +22,7 @@
 
       - string:
           name: SWITCH_NAME
-          default: 'x86-64-dell-z9100-c2538-r0'
+          default: 'x86-64-inventec-d5254-r0'
 
       - string:
            name: REGISTRY_URL
@@ -34,23 +31,15 @@
 
       - string:
           name: DOCKER_IMAGE
-          default: 'stratum-bcm'
+          default: 'stratum-bf'
 
       - string:
           name: DOCKER_IMAGE_TAG
-          default: 'sdklt'
-
-      - string:
-          name: DEBIAN_PACKAGE_PATH
-          default: ''
-
-      - string:
-          name: DEBIAN_PACKAGE_NAME
-          default: ''
+          default: '9.1.0'
 
     project-type: pipeline
     concurrent: true
     extraEnvironmentVars: ""
     sandbox: true
 
-    dsl: !include-raw-escape: ../../Jenkinsfiles/Jenkinsfile-stratum-bcm-test-master.groovy
+    dsl: !include-raw-escape: ../../Jenkinsfiles/Jenkinsfile-fabric-tna.groovy

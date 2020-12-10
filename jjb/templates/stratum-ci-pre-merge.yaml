@@ -1,0 +1,34 @@
+# SPDX-FileCopyrightText: 2020 Open Networking Foundation <info@opennetworking.org>
+#
+# SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
+
+---
+
+- job-template:
+    id: stratum-ci-pre-merge
+    name: '{id}'
+    description: |
+      Created by {id} job-template from ci-management/jjb/stratum-ci-pre-merge.yaml, script Jenkinsfiles/Jenkinsfile-stratum-ci-pre-merge.groovy
+    properties:
+      - onf-infra-properties:
+          build-days-to-keep: '15'
+          artifact-num-to-keep: '15'
+    wrappers:
+      - onf-infra-rsync-wrappers:
+          build-timeout: '{build-timeout}'
+    parameters:
+      - string:
+          name: BUILD_NODE
+          default: '{build-node}'
+          description: 'Name of the Jenkins build executor to run the job on'
+      - string:
+          name: JJB_VERSION
+          default: '3.2.0'
+          description: 'JJB Version to be installed'
+
+    concurrent: true
+    extraEnvironmentVars: ""
+    sandbox: true
+    project-type: pipeline
+
+    dsl: !include-raw-escape: ../../Jenkinsfiles/Jenkinsfile-stratum-ci-pre-merge.groovy

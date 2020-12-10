@@ -3,13 +3,13 @@
 # SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
 
 ---
-# Job to run TestVectors on given switch
+# Job to trigger stratum-bcm-test on available switches
 
 - job-template:
-    id: stratum-bcm-test
+    id: stratum-bcm-test-combined
     name: '{id}'
     description: |
-      Created by {id} job-template from ci-management/jjb/stratum-bcm-test.yaml, script Jenkinsfiles/Jenkinsfile-stratum-bcm-test-master.groovy
+      Created by {id} job-template from ci-management/jjb/stratum-bcm-test-combined.yaml, script Jenkinsfiles/Jenkinsfile-stratum-bcm-test-combined.groovy
     properties:
       - onf-infra-properties:
           build-days-to-keep: '15'
@@ -22,10 +22,6 @@
           name: BUILD_NODE
           default: '{build-node}'
           description: 'Name of the Jenkins build executor to run the job on'
-
-      - string:
-          name: SWITCH_NAME
-          default: 'x86-64-dell-z9100-c2538-r0'
 
       - string:
            name: REGISTRY_URL
@@ -53,4 +49,4 @@
     extraEnvironmentVars: ""
     sandbox: true
 
-    dsl: !include-raw-escape: ../../Jenkinsfiles/Jenkinsfile-stratum-bcm-test-master.groovy
+    dsl: !include-raw-escape: ../../Jenkinsfiles/Jenkinsfile-stratum-bcm-test-combined.groovy

@@ -2,14 +2,16 @@
 #
 # SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
 
-# for spgw
 - project:
     name: stratum-bcm
     project: '{name}'
     
     jobs:
+        - 'stratum-bcm':
+            build-timeout: 30  
         - 'stratum-bcm-build':
             build-timeout: 30
-        - 'stratum-bcm-test':
+        - 'stratum-bcm-test-combined':
             build-timeout: 30
-            
+        - 'stratum-bcm-test':
+            build-timeout: 30          

@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
 
 ---
-# CORD GLOBAL jenkins job builder (JJB) defaults
+# STRATUM GLOBAL jenkins job builder (JJB) defaults
 
 - defaults:
     name: global

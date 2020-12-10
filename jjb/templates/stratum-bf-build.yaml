@@ -3,8 +3,7 @@
 # SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
 
 ---
-# GERRIT version of docker-publish
-# generic docker image building + dockerhub publishing tasks
+# Job to build stratum barefoot docker image
 
 - job-template:
     id: stratum-bf-build

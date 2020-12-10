@@ -2,7 +2,9 @@
 Build Parameters
 BUILD_NODE: p4-dev
 DOCKER_IMAGE: 10.128.13.253:5000/stratum-bf
-DOCKER_IMAGE_TAG: 8.9.2-4.14.49-OpenNetworkLinux
+REGISTRY_URL: 
+DOCKER_REPOSITORY_NAME: stratum-bf
+DOCKER_IMAGE_TAG: 9.1.0
 */
 
 pipeline {
@@ -12,15 +14,32 @@ pipeline {
     options {
         timeout(time: 10, unit: 'MINUTES')
     }
+    environment {
+        pullImageName = "${REGISTRY_URL}/${DOCKER_REPOSITORY_NAME}:${DOCKER_IMAGE_TAG}"
+        pushImageName = "stratumproject/${DOCKER_REPOSITORY_NAME}:${DOCKER_IMAGE_TAG}"
+    }
     stages {
-        stage('Publish') {
+        stage('Pull') {
+            environment {
+                REGISTRY_CREDS = credentials("aether-registry-credentials")
+            }
             steps {
-                sh returnStdout: false, label: "Start publishing ${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG}", script: """
-                    image="stratumproject/"\$(echo $DOCKER_IMAGE | cut -d'/' -f2)
-                    docker tag ${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG} \$image:${DOCKER_IMAGE_TAG}
-                    docker push \$image:${DOCKER_IMAGE_TAG}
+                sh returnStdout: false, label: "Start publishing ${DOCKER_REPOSITORY_NAME}:${DOCKER_IMAGE_TAG}", script: """
+                    docker login ${REGISTRY_URL} -u ${REGISTRY_CREDS_USR} -p ${REGISTRY_CREDS_PSW}
+                    docker pull ${pullImageName}
+                    docker tag ${pullImageName} ${pushImageName}
                 """
             }
         }
+        stage('Publish') {
+           steps {
+                withDockerRegistry([ credentialsId: "onf_docker_hub", url: "" ]) {
+                    sh returnStdout: false, label: "Start publishing ${DOCKER_REPOSITORY_NAME}:${DOCKER_IMAGE_TAG}", script: """
+                        docker push ${pushImageName}
+		    """
+                }
+            } 
+        }
     }
 }
+

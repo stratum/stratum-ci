@@ -3,8 +3,7 @@
 # SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
 
 ---
-# GERRIT version of docker-publish
-# generic docker image building + dockerhub publishing tasks
+# Job to run TestVectors on given switch
 
 - job-template:
     id: stratum-bf-test

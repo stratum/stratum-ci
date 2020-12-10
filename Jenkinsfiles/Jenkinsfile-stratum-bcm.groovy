@@ -18,7 +18,6 @@ pipeline {
                 axes {
                     axis {
                         name 'KERNEL_VERSION'
-                        //values '4.9.75', '3.16.56', '4.14.49'
                         values '4.14.49'
                     }
                     axis {
@@ -34,29 +33,28 @@ pipeline {
                         steps {
                             sh returnStdout: false, label: "Start building stratum-bcm:${SDE}", script: ""
                             build job: "stratum-bcm-build", parameters: [
+				string(name: 'KERNEL_VERSION', value: "${KERNEL_VERSION}"),
                                 string(name: 'SDE', value: "${SDE}"),
-                                string(name: 'DOCKER_REGISTRY_IP', value: "${DOCKER_REGISTRY_IP}"),
-                                string(name: 'DOCKER_REGISTRY_PORT', value: "${DOCKER_REGISTRY_PORT}"),
+                                string(name: 'REGISTRY_URL', value: "${REGISTRY_URL}"),
                             ]
                         }
                     }
                     stage('Test') {
                         steps {
-                            sh returnStdout: false, label: "Start testing ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm:${SDE}", script: ""
+                            sh returnStdout: false, label: "Start testing ${REGISTRY_URL}/stratum-bcm:${SDE}", script: ""
                             build job: "stratum-bcm-test-combined", parameters: [
-                                string(name: 'DOCKER_IMAGE', value: "${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm"),
+                                string(name: 'REGISTRY_URL', value: "${REGISTRY_URL}"),
+                                string(name: 'DOCKER_IMAGE', value: "stratum-bcm"),
                                 string(name: 'DOCKER_IMAGE_TAG', value: "${SDE}"),
-                                string(name: 'DEBIAN_PACKAGE_PATH', value: "/var/jenkins"),
-                                string(name: 'DEBIAN_PACKAGE_NAME', value: "stratum_bcm_${SDE}_deb.deb"),
-                                string(name: 'SDE', value: "${SDE}")
                             ]
                         }
                     }
                     stage('Publish') {
                         steps {
-                            sh returnStdout: false, label: "Start publishing ${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm:${SDE}", script: ""
+                            sh returnStdout: false, label: "Start publishing ${REGISTRY_URL}/stratum-bcm:${SDE}", script: ""
                             build job: "stratum-publish", parameters: [
-                                string(name: 'DOCKER_IMAGE', value: "${DOCKER_REGISTRY_IP}:${DOCKER_REGISTRY_PORT}/stratum-bcm"),
+                                string(name: 'REGISTRY_URL', value: "${REGISTRY_URL}"),
+                                string(name: 'DOCKER_REPOSITORY_NAME', value: "stratum-bcm"),
                                 string(name: 'DOCKER_IMAGE_TAG', value: "${SDE}"),
                             ]
                         }
@@ -65,9 +63,9 @@ pipeline {
             }
         }
     }
-    post {
+    /*post {
         failure {
-            slackSend color: 'danger', message: "Test failed: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.RUN_DISPLAY_URL}|Open>)"
+             slackSend color: 'danger', message: "Test failed: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.RUN_DISPLAY_URL}|Open>)"
         }
-    }
+    }*/
 }

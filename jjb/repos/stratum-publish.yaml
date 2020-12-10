@@ -3,16 +3,10 @@
 # SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
 
 - project:
-    name: stratum-bf
+    name: stratum-publish
     project: '{name}'
     
     jobs:
-        - 'stratum-bf':
-            build-timeout: 30
-        - 'stratum-bf-build':
-            build-timeout: 30
-        - 'stratum-bf-test-combined':
-            build-timeout: 30
-        - 'stratum-bf-test':
+        - 'stratum-publish':
             build-timeout: 30
             
