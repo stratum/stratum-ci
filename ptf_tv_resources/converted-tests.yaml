@@ -1,3 +1,4 @@
+fabric:
   - FabricBridgingTest
   - FabricDoubleTaggedBridgingTest
   - FabricArpBroadcastUntaggedTest
@@ -17,3 +18,28 @@
   - FabricShortIpPacketInTest
   - FabricTaggedPacketInTest
   - FabricDefaultVlanPacketInTest
+
+fabric-spgw:
+  - FabricBridgingTest
+  - FabricDoubleTaggedBridgingTest
+  - FabricArpBroadcastUntaggedTest
+  - FabricArpBroadcastTaggedTest
+  - FabricArpBroadcastMixedTest
+  - FabricIPv4MulticastTest
+  - FabricIPv4UnicastTest
+  - FabricIPv4UnicastDefaultRouteTest
+  - FabricIPv4UnicastGtpPassthroughTest
+  - FabricIPv4MplsGroupTest
+  - FabricMplsSegmentRoutingTest
+  - FabricArpPacketOutTest
+  - FabricShortIpPacketOutTest
+  - FabricLongIpPacketOutTest
+  - FabricArpPacketInTest
+  - FabricLongIpPacketInTest
+  - FabricShortIpPacketInTest
+  - FabricTaggedPacketInTest
+  - FabricDefaultVlanPacketInTest
+  - FabricSpgwDownlinkToDbufTest
+  - FabricSpgwDownlinkTest
+  - FabricSpgwUplinkTest
+  - FabricSpgwDownlinkFromDbufTest
