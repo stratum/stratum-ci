@@ -8,5 +8,5 @@
     project: '{name}'
 
     jobs:
-        - 'stratum-helm-chart-lint':
-            build-timeout: 30
+        - 'stratum-helm-chart-lint'
+        - 'stratum-helm-chart-publish'

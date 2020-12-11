@@ -40,7 +40,6 @@
           default: 'stratum-helm-charts'
           description: 'Repository of the project.'
     triggers:
-      - github
       - github-pull-request:
           github-hooks: true
           cancel-builds-on-update: true

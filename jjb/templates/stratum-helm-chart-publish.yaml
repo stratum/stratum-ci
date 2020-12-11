@@ -1,0 +1,46 @@
+# SPDX-FileCopyrightText: 2020 Open Networking Foundation <info@opennetworking.org>
+#
+# SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
+
+---
+# GERRIT version of docker-publish
+# generic docker image building + dockerhub publishing tasks
+
+- job-template:
+    id: stratum-helm-chart-publish
+    name: '{id}'
+    description: |
+      <!-- Managed by Jenkins Job Builder -->
+      Created by {id} job-template from ci-management/jjb/stratum-helm-chart-publish.yaml, script Jenkinsfiles/Jenkinsfile-stratum-helm-charts-publish.groovy
+    properties:
+      - onf-infra-properties:
+          build-days-to-keep: '15'
+          artifact-num-to-keep: '15'
+      - github:
+           url: 'https://github.com/stratum/stratum-helm-charts'
+    parameters:
+      - string:
+          name: BUILD_NODE
+          default: '{build-node}'
+          description: 'Name of the Jenkins build executor to run the job on'
+    triggers:
+      - generic-webhook-trigger:
+            post-content-params:
+                - type: JSONPath
+                  key: action
+                  value: $.action
+                - type: JSONPath
+                  key: merged
+                  value: $.pull_request.merged
+                - type: JSONPath
+                  key: branchName
+                  value: $.pull_request.base.ref
+            regex-filter-text: $action,$merged,$branchName
+            regex-filter-expression: ^(closed,true,master)$
+            cause: Generic Cause
+            token: 'stratum-helm-charts'
+
+    project-type: pipeline
+    concurrent: false
+
+    dsl: !include-raw-escape: ../../Jenkinsfiles/Jenkinsfile-stratum-helm-charts-publish.groovy
