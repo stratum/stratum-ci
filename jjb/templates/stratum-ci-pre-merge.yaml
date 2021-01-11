@@ -8,7 +8,7 @@
     id: stratum-ci-pre-merge
     name: '{id}'
     description: |
-      Created by {id} job-template from ci-management/jjb/stratum-ci-pre-merge.yaml, script Jenkinsfiles/Jenkinsfile-stratum-ci-pre-merge.groovy
+      Created by {id} job-template from ci-management/jjb/stratum-ci-pre-merge.yaml, script ../pipeline/stratum-ci-pre-merge.groovy
     properties:
       - onf-infra-properties:
           build-days-to-keep: '15'
@@ -31,4 +31,4 @@
     sandbox: true
     project-type: pipeline
 
-    dsl: !include-raw-escape: ../../Jenkinsfiles/Jenkinsfile-stratum-ci-pre-merge.groovy
+    dsl: !include-raw-escape: ../pipeline/stratum-ci-pre-merge.groovy

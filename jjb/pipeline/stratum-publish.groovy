@@ -1,12 +1,3 @@
-/*
-Build Parameters
-BUILD_NODE: p4-dev
-DOCKER_IMAGE: 10.128.13.253:5000/stratum-bf
-REGISTRY_URL: 
-DOCKER_REPOSITORY_NAME: stratum-bf
-DOCKER_IMAGE_TAG: 9.1.0
-*/
-
 pipeline {
     agent {
         label "${BUILD_NODE}"

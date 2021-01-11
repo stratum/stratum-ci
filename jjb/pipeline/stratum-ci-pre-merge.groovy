@@ -1,9 +1,3 @@
-/*
-Build Parameters
-BUILD_NODE: p4-dev
-JJB_VERSION: 3.2.0
-*/
-
 pipeline {
     agent {
         label "${BUILD_NODE}"

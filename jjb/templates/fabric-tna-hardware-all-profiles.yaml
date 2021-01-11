@@ -2,15 +2,13 @@
 #
 # SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
 
----
-# Job to run TestVectors on given switch
-
 - job-template:
-    id: stratum-bf-test
-    name: 'stratum-{target}-test'
+    id: fabric-tna-all-profiles
+    name: '{id}-{switch_name}'
     description: |
-      Created by {id} job-template from ci-management/jjb/stratum-bf-test.yaml, script ../pipeline/stratum-bf-test-master.groovy
+      Created by {id} job-template from ci-management/jjb/favric-tna-hardware-all-profiles.yaml, script ../pipeline/fabric-tna-all-profiles.groovy
     properties:
+      - onf-infra-onfstaff-private:
       - onf-infra-properties:
           build-days-to-keep: '15'
           artifact-num-to-keep: '15'
@@ -25,28 +23,42 @@
 
       - string:
           name: SWITCH_NAME
-          default: 'x86-64-inventec-d5254-r0'
+          default: '{switch_name}'
 
       - string:
            name: REGISTRY_URL
-           default: 'registry.aetherproject.org/stratum-ccp'
+           default: 'registry.aetherproject.org/tost'
            description: 'Private registry URL'
 
       - string:
           name: DOCKER_IMAGE
-          default: 'stratum-{target}'
+          default: 'stratum-bfrt'
 
       - string:
           name: DOCKER_IMAGE_TAG
-          default: '9.1.0'
+          default: 'latest-9.2.0'
 
       - string:
-          name: TARGET
-          default: '{target}'
+          name: SDE_DOCKER_IMAGE
+          default: 'opennetworking/bf-sde'
+
+      - string:
+          name: SDE_DOCKER_IMAGE_TAG
+          default: '9.2.0-p4c'
+
+      - string:
+          name: SDE_VERSION
+          default: '9.2.0'
+
+      - string:
+          name: CPU_PORT
+          default: '{cpu_port}'
+    triggers:
+      - timed: '{once-a-day}'
 
     project-type: pipeline
     concurrent: true
     extraEnvironmentVars: ""
     sandbox: true
 
-    dsl: !include-raw-escape: ../pipeline/stratum-bf-test-master.groovy
+    dsl: !include-raw-escape: ../pipeline/fabric-tna-all-profiles.groovy

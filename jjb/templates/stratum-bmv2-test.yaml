@@ -9,7 +9,7 @@
     id: stratum-bmv2-test
     name: '{id}'
     description: |
-      Created by {id} job-template from ci-management/jjb/stratum-bmv2-test.yaml, script Jenkinsfiles/Jenkinsfile-stratum-bmv2-test.groovy
+      Created by {id} job-template from ci-management/jjb/stratum-bmv2-test.yaml, script ../pipeline/stratum-bmv2-test.groovy
     properties:
       - onf-infra-properties:
           build-days-to-keep: '15'
@@ -43,4 +43,4 @@
     extraEnvironmentVars: ""
     sandbox: true
 
-    dsl: !include-raw-escape: ../../Jenkinsfiles/Jenkinsfile-stratum-bmv2-test.groovy
+    dsl: !include-raw-escape: ../pipeline/stratum-bmv2-test.groovy

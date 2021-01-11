@@ -1,19 +1,10 @@
-/*
-Build Parameters
-BUILD_NODE: p4-dev
-REGISTRY_URL: registry.aetherproject.org/stratum-ccp
-SDE_VERSION: 8.9.2
-KERNEL_VERSION: 4.14.49
-BAZEL_DISK_CACHE: /home/sdn/bazel-disk-cache
-*/
-
 pipeline {
     agent {
         label "${BUILD_NODE}"
     }
     options {
         timeout(time: 60, unit: 'MINUTES')
-        withAWS(credentials:'AKIAR6Z4ESHHIXKSMOXU')
+        withAWS(credentials:"${AWS_S3_CREDENTIAL}")
     }
     environment {
         SDE_TAR = "bf-sde-${SDE_VERSION}-install.tgz"
@@ -30,14 +21,14 @@ pipeline {
                 REGISTRY_CREDS = credentials("aether-registry-credentials")
             }
             steps {
-                sh returnStdout: false, label: "Start building stratum-bf:bf-sde-${SDE_VERSION}-linux-${KERNEL_VERSION}-OpenNetworkLinux", script: """
+                sh returnStdout: false, label: "Start building stratum-${STRATUM_TARGET}:${SDE_VERSION}", script: """
                     git clone https://github.com/stratum/stratum.git
                     cd ${WORKSPACE}/stratum
                     cd ${WORKSPACE}/stratum/stratum/hal/bin/barefoot/docker
-                    SDE_INSTALL_TAR=${WORKSPACE}/${SDE_TAR} ./build-stratum-bf-container.sh
-                    docker tag stratumproject/stratum-bf:${SDE_VERSION} ${REGISTRY_URL}/stratum-bf:${SDE_VERSION}
+                    STRATUM_TARGET=stratum_${STRATUM_TARGET} SDE_INSTALL_TAR=${WORKSPACE}/${SDE_TAR} ./build-stratum-bf-container.sh
+                    docker tag stratumproject/stratum-${STRATUM_TARGET}:${SDE_VERSION} ${REGISTRY_URL}/stratum-${STRATUM_TARGET}:${SDE_VERSION}
                     docker login ${REGISTRY_URL} -u ${REGISTRY_CREDS_USR} -p ${REGISTRY_CREDS_PSW}
-                    docker push ${REGISTRY_URL}/stratum-bf:${SDE_VERSION}
+                    docker push ${REGISTRY_URL}/stratum-${STRATUM_TARGET}:${SDE_VERSION}
                 """
             }
         }

@@ -7,9 +7,9 @@
 
 - job-template:
     id: stratum-bf-build
-    name: '{id}'
+    name: 'stratum-{target}-build'
     description: |
-      Created by {id} job-template from ci-management/jjb/stratum-bf-build.yaml, script Jenkinsfiles/Jenkinsfile-stratum-bf-build.groovy
+      Created by {id} job-template from ci-management/jjb/stratum-bf-build.yaml, script ../pipeline/stratum-bf-build.groovy
     properties:
       - onf-infra-properties:
           build-days-to-keep: '15'
@@ -39,13 +39,23 @@
           description: 'Private registry URL'
 
       - string:
+          name: STRATUM_TARGET
+          default: '{target}'
+          description: 'Stratum barefoot target (bf or bfrt)'
+
+      - string:
           name: BAZEL_CACHE_OUTPUT
           default: '/home/sdn/.cache/bazel/_bazel_root/cache'
           description: 'Bazel cache output for faster building of stratum unit test'
+
+      - string:
+          name: AWS_S3_CREDENTIAL
+          default: '{aws-s3-credential}'
+          description: 'Credentials name for AWS S3 bucket'
 
     project-type: pipeline
     concurrent: true
     extraEnvironmentVars: ""
     sandbox: true
 
-    dsl: !include-raw-escape: ../../Jenkinsfiles/Jenkinsfile-stratum-bf-build.groovy
+    dsl: !include-raw-escape: ../pipeline/stratum-bf-build.groovy

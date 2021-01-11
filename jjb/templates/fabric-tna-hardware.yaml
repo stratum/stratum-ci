@@ -1,13 +1,14 @@
----
-# GERRIT version of docker-publish
-# generic docker image building + dockerhub publishing tasks
+# SPDX-FileCopyrightText: 2020 Open Networking Foundation <info@opennetworking.org>
+#
+# SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
 
 - job-template:
-    id: fabric-tna-hardware
-    name: '{id}'
+    id: fabric-tna
+    name: '{id}-{switch_name}'
     description: |
-      Created by {id} job-template from ci-management/jjb/favric-tna-hardware.yaml, script Jenkinsfiles/Jenkinsfile-fabric-tna.groovy
+      Created by {id} job-template from ci-management/jjb/favric-tna-hardware.yaml, script ../pipeline/fabric-tna.groovy
     properties:
+      - onf-infra-onfstaff-private:
       - onf-infra-properties:
           build-days-to-keep: '15'
           artifact-num-to-keep: '15'
@@ -22,24 +23,44 @@
 
       - string:
           name: SWITCH_NAME
-          default: 'x86-64-inventec-d5254-r0'
+          default: '{switch_name}'
 
       - string:
            name: REGISTRY_URL
-           default: 'registry.aetherproject.org/stratum-ccp'
+           default: 'registry.aetherproject.org/tost'
            description: 'Private registry URL'
 
       - string:
           name: DOCKER_IMAGE
-          default: 'stratum-bf'
+          default: 'stratum-bfrt'
 
       - string:
           name: DOCKER_IMAGE_TAG
-          default: '9.1.0'
+          default: 'latest-9.2.0'
+
+      - string:
+          name: SDE_DOCKER_IMAGE
+          default: 'opennetworking/bf-sde'
+
+      - string:
+          name: SDE_DOCKER_IMAGE_TAG
+          default: '9.2.0-p4c'
+
+      - string:
+          name: SDE_VERSION
+          default: '9.2.0'
+
+      - string:
+          name: PROFILE
+          default: 'fabric'
+
+      - string:
+          name: CPU_PORT
+          default: '{cpu_port}'
 
     project-type: pipeline
     concurrent: true
     extraEnvironmentVars: ""
     sandbox: true
 
-    dsl: !include-raw-escape: ../../Jenkinsfiles/Jenkinsfile-fabric-tna.groovy
+    dsl: !include-raw-escape: ../pipeline/fabric-tna.groovy

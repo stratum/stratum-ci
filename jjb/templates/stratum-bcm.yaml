@@ -9,7 +9,7 @@
     id: stratum-bcm
     name: '{id}'
     description: |
-      Created by {id} job-template from ci-management/jjb/stratum-bcm.yaml, script Jenkinsfiles/Jenkinsfile-stratum-bcm.groovy
+      Created by {id} job-template from ci-management/jjb/stratum-bcm.yaml, script ../pipeline/stratum-bcm.groovy
     properties:
       - onf-infra-properties:
           build-days-to-keep: '15'
@@ -27,11 +27,12 @@
           name: REGISTRY_URL
           default: 'registry.aetherproject.org/stratum-ccp'
           description: 'Private registry URL'
-
+    triggers:
+      - timed: '{once-a-day}'
 
     project-type: pipeline
     concurrent: true
     extraEnvironmentVars: ""
     sandbox: true
 
-    dsl: !include-raw-escape: ../../Jenkinsfiles/Jenkinsfile-stratum-bcm.groovy
+    dsl: !include-raw-escape: ../pipeline/stratum-bcm.groovy
