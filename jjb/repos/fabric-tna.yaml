@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: 2020 Open Networking Foundation <info@opennetworking.org>
+#
+# SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
+
+- project:
+    name: fabric-tna
+    project: '{name}'
+    
+    jobs:
+        - 'fabric-tna-all-profiles':
+            build-timeout: 30
+            switch_name: 'x86-64-inventec-d5254-r0'
+            cpu_port: '192'
+        - 'fabric-tna-all-profiles':
+            build-timeout: 30
+            switch_name: 'x86-64-stordis-bf6064x-t-r0'
+            cpu_port: '320'
+        - 'fabric-tna':
+            build-timeout: 30
+            switch_name: 'x86-64-inventec-d5254-r0'
+            cpu_port: '192'
+        - 'fabric-tna':
+            build-timeout: 30
+            switch_name: 'x86-64-stordis-bf6064x-t-r0'
+            cpu_port: '320'
+            

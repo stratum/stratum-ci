@@ -1,0 +1,43 @@
+# SPDX-FileCopyrightText: 2020 Open Networking Foundation <info@opennetworking.org>
+#
+# SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
+
+---
+# Job to trigger stratum bf build, test and publish
+
+- job-template:
+    id: stratum-bf
+    name: 'stratum-{target}'
+    description: |
+      Created by {id} job-template from ci-management/jjb/stratum-bf.yaml, script ../pipeline/stratum-bf.groovy
+    properties:
+      - onf-infra-properties:
+          build-days-to-keep: '15'
+          artifact-num-to-keep: '15'
+    wrappers:
+      - onf-infra-rsync-wrappers:
+          build-timeout: '{build-timeout}'
+    parameters:
+      - string:
+          name: BUILD_NODE
+          default: '{build-node}'
+          description: 'Name of the Jenkins build executor to run the job on'
+
+      - string:
+          name: REGISTRY_URL
+          default: 'registry.aetherproject.org/stratum-ccp'
+          description: 'Private registry URL'
+
+      - string:
+          name: TARGET
+          default: '{target}'
+          description: 'Stratum barefoot target (bf or bfrt)'
+    triggers:
+      - timed: '{once-a-day}'
+
+    project-type: pipeline
+    concurrent: true
+    extraEnvironmentVars: ""
+    sandbox: true
+
+    dsl: !include-raw-escape: ../pipeline/stratum-bf.groovy

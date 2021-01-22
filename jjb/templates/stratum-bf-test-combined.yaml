@@ -1,0 +1,47 @@
+# SPDX-FileCopyrightText: 2020 Open Networking Foundation <info@opennetworking.org>
+#
+# SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
+
+---
+# Job to trigger stratum-bcm-test on available switches
+
+- job-template:
+    id: stratum-bf-test-combined
+    name: 'stratum-{target}-test-combined'
+    description: |
+      Created by {id} job-template from ci-management/jjb/stratum-bf-test-combined.yaml, script ../pipeline/stratum-bf-test-combined.groovy
+    properties:
+      - onf-infra-properties:
+          build-days-to-keep: '15'
+          artifact-num-to-keep: '15'
+    wrappers:
+      - onf-infra-rsync-wrappers:
+          build-timeout: '{build-timeout}'
+    parameters:
+      - string:
+          name: BUILD_NODE
+          default: '{build-node}'
+          description: 'Name of the Jenkins build executor to run the job on'
+      - string:
+           name: REGISTRY_URL
+           default: 'registry.aetherproject.org/stratum-ccp'
+           description: 'Private registry URL'
+
+      - string:
+          name: DOCKER_IMAGE
+          default: 'stratum-{target}'
+
+      - string:
+          name: DOCKER_IMAGE_TAG
+          default: '9.1.0'
+
+      - string:
+          name: TARGET
+          default: '{target}'
+
+    project-type: pipeline
+    concurrent: true
+    extraEnvironmentVars: ""
+    sandbox: true
+
+    dsl: !include-raw-escape: ../pipeline/stratum-bf-test-combined.groovy

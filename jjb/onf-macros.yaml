@@ -1,0 +1,263 @@
+# SPDX-FileCopyrightText: 2020 Open Networking Foundation <info@opennetworking.org>
+#
+# SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
+
+# JJB Macros for ONF jobs
+
+# basic string parameters for onf projects
+# differs from lf-infra-parameters as it allows to speficy a different gerrit project
+- parameter:
+    name: onf-infra-parameters
+    parameters:
+      - string:
+          name: PROJECT
+          default: '{project}'
+      - string:
+          name: STREAM
+          default: '{stream}'
+      - string:
+          name: GERRIT_PROJECT
+          default: '{gerrit_project}'
+      - string:
+          name: GERRIT_BRANCH
+          default: '{stream}'
+      - string:
+          name: GERRIT_REFSPEC
+          default: "refs/heads/{stream}"
+      - string:
+          name: sha1
+          default: "origin/{stream}"
+
+# basic string parameters when using onf-infra-github-pr-trigger-merge
+- parameter:
+    name: onf-infra-github-pr-merge-parameters
+    parameters:
+      - string:
+          name: repoName
+          default: '{repo-name}'
+          description: 'Name of the git repo. Populated by Generic Webhook Trigger'
+
+      - string:
+          name: repoUrl
+          default: '{repo-url}'
+          description: 'URL to the git repo. Populated by Generic Webhook Trigger'
+
+      - string:
+          name: branchName
+          default: '{branch}'
+          description: 'Branch of the project. Populated by Generic Webhook Trigger'
+
+      - string:
+          name: commitHash
+          default: '{sha1}'
+          description: 'SHA string of the merged commit. Populated by Generic Webhook Trigger'
+
+
+# control how long builds and artifact are retained
+# differs from lf-infra-properties as it retains artifacts
+- property:
+    name: onf-infra-properties
+    properties:
+      - build-discarder:
+          days-to-keep: '{build-days-to-keep}'
+          artifact-num-to-keep: '{artifact-num-to-keep}'
+
+# Sets permissions for job to be visible to ONFStaff only.
+# Useful when running tools under NDA for which we don't have permission to
+# publish logs or output.
+- property:
+    name: onf-infra-onfstaff-private
+    properties:
+      - raw:
+          xml: |
+              <hudson.security.AuthorizationMatrixProperty>
+                <inheritanceStrategy class="org.jenkinsci.plugins.matrixauth.inheritance.NonInheritingStrategy"/>
+                <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Create:JenkinsPowerusers</permission>
+                <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Delete:JenkinsPowerusers</permission>
+                <permission>com.cloudbees.plugins.credentials.CredentialsProvider.ManageDomains:JenkinsPowerusers</permission>
+                <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Update:JenkinsPowerusers</permission>
+                <permission>com.cloudbees.plugins.credentials.CredentialsProvider.View:JenkinsPowerusers</permission>
+                <permission>hudson.model.Item.Build:JenkinsPowerusers</permission>
+                <permission>hudson.model.Item.Cancel:JenkinsPowerusers</permission>
+                <permission>hudson.model.Item.Configure:JenkinsPowerusers</permission>
+                <permission>hudson.model.Item.Delete:JenkinsPowerusers</permission>
+                <permission>hudson.model.Item.Discover:JenkinsPowerusers</permission>
+                <permission>hudson.model.Item.ExtendedRead:JenkinsPowerusers</permission>
+                <permission>hudson.model.Item.Move:JenkinsPowerusers</permission>
+                <permission>hudson.model.Item.Read:JenkinsPowerusers</permission>
+                <permission>hudson.model.Item.Workspace:JenkinsPowerusers</permission>
+                <permission>hudson.model.Run.Delete:JenkinsPowerusers</permission>
+                <permission>hudson.model.Run.Replay:JenkinsPowerusers</permission>
+                <permission>hudson.model.Run.Update:JenkinsPowerusers</permission>
+                <permission>hudson.model.Item.Discover:ONFStaff</permission>
+                <permission>hudson.model.Item.Discover:anonymous</permission>
+                <permission>hudson.model.Item.Read:ONFStaff</permission>
+                <permission>hudson.model.Item.ViewStatus:anonymous</permission>
+              </hudson.security.AuthorizationMatrixProperty>
+
+# trigger on gerrit patchsets and actions
+# docs: https://docs.openstack.org/infra/jenkins-job-builder/triggers.html#triggers.gerrit
+# Uses a regex based project match
+- trigger:
+    name: onf-infra-gerrit-trigger-patchset
+    triggers:
+      - gerrit:
+          server-name: '{gerrit-server-name}'
+          dependency-jobs: '{dependency-jobs}'
+          silent-start: true
+          trigger-on:
+            - patchset-created-event:
+                exclude-drafts: true
+                exclude-trivial-rebase: false
+                exclude-no-code-change: false
+            - draft-published-event
+            - comment-added-contains-event:
+                comment-contains-value: '(?i)^.*recheck$'
+          projects:
+            - project-compare-type: REG_EXP
+              project-pattern: '{project-regexp}'
+              branches:
+                - branch-compare-type: REG_EXP
+                  branch-pattern: '{branch-regexp}'
+              file-paths:
+                - compare-type: REG_EXP
+                  pattern: '{file-include-regexp}'
+
+
+# same as lf-infra-gerrit-scm, but allows checkouts to a subdir of $WORKSPACE
+# with the `basedir` option
+#
+# `basedir` serves the same function as `destination-dir` in the repo scm
+# macros, seems strange that they're named differently.
+- scm:
+    name: onf-infra-gerrit-scm
+    scm:
+      - git:
+          credentials-id: '{jenkins-ssh-credential}'
+          url: '{git-url}'
+          refspec: '{refspec}'
+          branches:
+            - 'refs/heads/{branch}'
+          wipe-workspace: true
+          submodule:
+            recursive: '{submodule-recursive}'
+          choosing-strategy: '{choosing-strategy}'
+          basedir: '{basedir}'
+
+- scm:
+    name: onf-infra-github-ssh-scm
+    scm:
+      - lf-infra-github-scm:
+          url: "git@github.com:{github-organization}/{project}.git"
+          # To checkout PRs and branches
+          refspec: "+refs/heads/*:refs/remotes/origin/* +refs/pull/*:refs/remotes/origin/pr/*"
+          # Can be commit hash
+          branch: "{branch}"
+          submodule-recursive:
+          submodule-timeout:
+          submodule-disable:
+          choosing-strategy: default
+          jenkins-ssh-credential: "{ssh-credential}"
+
+# trigger for gerrit patch submission
+- trigger:
+    name: onf-infra-gerrit-trigger-merge
+    triggers:
+      - gerrit:
+          server-name: '{gerrit-server-name}'
+          dependency-jobs: '{dependency-jobs}'
+          silent-start: true
+          trigger-on:
+            - change-merged-event
+          projects:
+            - project-compare-type: REG_EXP
+              project-pattern: '{project-regexp}'
+              branches:
+                - branch-compare-type: REG_EXP
+                  branch-pattern: '{branch-regexp}'
+              file-paths:
+                - compare-type: REG_EXP
+                  pattern: '{file-include-regexp}'
+
+# wrapper to provide SSH key and fill in ~/.ssh/known_hosts file for use with rsync
+- wrapper:
+    name: onf-infra-rsync-wrappers
+    wrappers:
+      - mask-passwords
+      - timeout:
+          type: absolute
+          timeout: '{build-timeout}'
+          timeout-var: 'BUILD_TIMEOUT'
+          fail: true
+      - timestamps
+      - ssh-agent-credentials:
+          users:
+            - '{jenkins-ssh-credential}'
+      - config-file-provider:
+          files:
+            - file-id: known_hosts
+              target: '$HOME/.ssh/known_hosts'
+
+# publisher to clean up the workspace after the build whatever the result
+- publisher:
+    name: onf-infra-wscleanup-publisher
+    publishers:
+      - workspace-cleanup:
+          clean-if:
+            - success: true
+            - unstable: true
+            - failure: true
+            - aborted: true
+            - not-built: true
+          dirmatch: false
+          fail-build: true
+          clean-parent: false
+          disable-deferred-wipeout: false
+
+# Trigger on GitHub pull requests
+# docs: https://docs.openstack.org/infra/jenkins-job-builder/triggers.html#triggers.github-pull-request
+# Uses the standard 'ok to test', etc. commands per the plugin:
+# https://github.com/jenkinsci/ghprb-plugin
+- trigger:
+    name: onf-infra-github-pr-trigger
+    triggers:
+      - github-pull-request:
+          auth-id: '{github_pr_auth_id}'
+          github-hooks: true  # Create github hooks automatically
+          cancel-builds-on-update: true
+          auto-close-on-fail: false
+          only-trigger-phrase: false
+          status-context: '{status_context}' # Name of testing system in PR
+          permit-all: false  # don't trigger on every PR
+          org-list: '{obj:github_pr_org_list}'
+          allow-whitelist-orgs-as-admins: true
+
+# Trigger on GitHub PR merge
+# docs: https://docs.openstack.org/infra/jenkins-job-builder/triggers.html#triggers.generic-webhook-trigger
+- trigger:
+    name: onf-infra-github-pr-trigger-merge
+    triggers:
+      - generic-webhook-trigger:
+            post-content-params:
+                - type: JSONPath
+                  key: action
+                  value: $.action
+                - type: JSONPath
+                  key: merged
+                  value: $.pull_request.merged
+                - type: JSONPath
+                  key: repoUrl
+                  value: $.pull_request.base.repo.html_url
+                - type: JSONPath
+                  key: repoName
+                  value: $.pull_request.base.repo.name
+                - type: JSONPath
+                  key: branchName
+                  value: $.pull_request.base.ref
+                - type: JSONPath
+                  key: commitHash
+                  value: $.pull_request.merge_commit_sha
+            regex-filter-text: $action,$merged
+            regex-filter-expression: ^(closed,true)$
+            cause: Generic Cause
+            token: '{project}'

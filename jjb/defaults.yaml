@@ -1,0 +1,210 @@
+# SPDX-FileCopyrightText: 2020 Open Networking Foundation <info@opennetworking.org>
+#
+# SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
+
+---
+# STRATUM GLOBAL jenkins job builder (JJB) defaults
+
+- defaults:
+    name: global
+
+    # used to enable disable jobs if the job template contains
+    # disabled: '{disable-job}'
+    disable-job: false
+
+    # lftools
+    lftools-version: '~=0.26.2'
+
+    # LF templates require these to be set in later versions of global-jjb
+    submodule-disable: 'false'
+    submodule-timeout: 10
+
+    # name of the SSH key to use in most cases
+    jenkins-ssh-credential: 'cord-jenkins-ssh'
+    gerrit-ssh-credential: 'gerrit-jenkins-user'
+    aws-s3-credential: 'AKIAR6Z4ESHHIXKSMOXU'
+
+    # by default, don't depend on other jobs
+    dependency-jobs: ''
+
+    # SCM checkout locations within Jenkins Workspace
+    destination-dir: ''
+    basedir: ''
+
+    # used to rename jobs as is required, if running same job more than once
+    # for a project
+    name-extension: ''
+
+    # How long to keep builds and artifacts
+    build-days-to-keep: 60
+    artifact-num-to-keep: 30
+
+    # list of artifacts to archive
+    archive-artifacts: ''
+
+    # build timeout (minutes)
+    build-timeout: 60
+
+    # timed trigger defaults, crontab syntax
+    # H = random value hashed by name of job
+    every-hour: "H * * * *"
+    every-four-hours: "H */4 * * *"
+    every-six-hours: "H */6 * * *"
+    every-eight-hours: "H */8 * * *"
+    twice-a-day: "H */12 * * *"
+    once-a-day: "H 0 * * *"
+
+    # The most frequently used type of Build Executor. Name is per the LF global-jjb.
+    # See build node types under "Cloud > Amazon EC2" at
+    #  https://jenkins.opencord.org/configure
+    build-node: ubuntu16.04-basebuild-2c-4g
+
+    # CORD Gerrit server definition, set in configuration
+    gerrit-server-name: 'CORD Gerrit'
+
+    # URL for Gerrit server, for use with `repo`
+    gerrit-server-url: 'https://gerrit.opencord.org'
+
+    # name of the manifest git repos used with the `repo` cli tool
+    cord-repo-manifest: manifest.git
+    cordqa-manifest-repo: qa-manifest.git
+    go-manifest-repo: go-manifest.git
+    voltha-test-manifest-repo: voltha-test-manifest.git
+
+    # default email address to send job failure messages
+    failure-email-address: 'cord-dev@opencord.org'
+
+    # Projects containing helm-charts
+    helm-charts-projects-regexp: '^(?!aether)(.*helm-charts|cord-platform|seba)$'
+
+    # regexp for gerrit triggers
+    # list of supported branches, for branch-regexp
+    all-branches-regexp: '.*'
+    supported-branches-regexp: '^(master|cord-7.0|cord-6.1|seba-1.0|voltha-2.3|voltha-2.4|voltha-2.5)$'
+    legacy-branches-regexp: '^(cord-5.0|cord-4.1|cord-4.0)$'
+    modern-branches-regexp: '^(master|cord-7.0|cord-6.1|cord-6.0|seba-1.0|voltha-2.3|voltha-2.4)$'
+    platform-branches-regexp: '^(master|cord-7.0|cord-6.1)$'
+    seba-branches-regexp: '^(master|cord-7.0|seba-1.0)$'
+
+    # matchs all project repos
+    all-projects-regexp: '.*'
+
+    # for matching repos that build docker images with imagebuilder
+    # As of 2019-04-16 most of the services actively being developed use the
+    # make-based image generation process managed by the `docker-publish` job
+    imagebuilder-projects-regexp: '^(cord-tester|mcord|ecord|acordion|addressmanager|epc-service|exampleservice|globalxos|hippie-oss|hss_db|hypercache|internetemulator|monitoring|openstack|progran|sdn-controller|templateservice|vEE|vEG|vBBU|venb|vHSS|vMME|vnaas|vPGWC|vPGWU|vsg|vsg-hw|vSGW|vSM|vspgwc|vspgwu|vtn-service|vtr)$'
+
+    # strictness of version checks
+    semver-strict: 0
+
+    # matching repos that should be version tagged by the version-tag job
+    # (basically the same as imagebuilder projects + helm charts + tools
+    version-tag-projects-regexp: '^(?!aether)(xos.*|.*helm-charts|automation-tools|cord-tester|chameleon|rcord|mcord|ecord|acordion|addressmanager|epc-service|exampleservice|fabric.*|globalxos|hippie-oss|hss_db|hypercache|internetemulator|kubernetes-service|monitoring|olt-service|onos-service|openstack|progran|sdn-controller|simpleexampleservice|templateservice|vEE|vEG|vBBU|venb|vHSS|vMME|vnaas|vPGWC|vPGWU|vrouter|vsg|vsg-hw|vSGW|vSM|vspgwc|vspgwu|vtn-service|vtr|.*-workflow-driver|ves-agent|voltha-bbsim|openolt|sadis-server|kafka-topic-exporter|pyvoltha||plyxproto|voltha-protos|alpine-grpc-base|cordctl|voltha-go|voltha-onos|device-management|cord-workflow.*|voltha-system-tests|openairinterface|omec-.*|bbsim|omci-sim|ponsim|pppoel2relay|voltha-api-server|aaa|config|dhcpl2relay|igmp|igmpproxy|kafka-onos|mcast|olt|sadis|vtn|voltha-.*-adapter.*|voltha-lib-go|voltha-python-base|voltha-docker-tools|mn-stratum-siab|ofagent.*|bng|voltctl|openolt-scale-tester|nem-ondemand-proxy|multifabric|openolt-test|omci-lib-go|kind-voltha|voltha-docs|mac-learning|goloxi|device-management-interface)$'
+
+    # List of all repos that contribute to the CORD guide
+    cord-guide-projects-regexp: '^(att-workflow-driver|cord-tester|cordctl|exampleservice|fabric|fabric-crossconnect|hippie-oss|kubernetes-service|olt-service|onos-service|openolt|openstack|rcord|simpleexampleservice|vrouter|vtn-service|xos|xos-gui|xos-tosca)$'
+
+    # PyPI related publishing variables
+    #
+    # Pipe-separated list of directories relative to $WORKSPACE containing
+    # python modules to publish to PyPI. Default is current directory which is
+    # correct for simple modules
+    pypi-module-dirs: '.'
+
+    # Which PyPI index to use. Corresponds to values in ~/.pypirc
+    # 'pypi' and 'testpypi' are current options. Default to testpypi, override
+    # in the job once testing is completed
+    pypi-index: 'testpypi'
+
+    # Commands to run within the root of the checked out repo before running
+    # the `python setup.py sdist` to generate the distribution.
+    # Primarily used for autogenerating code before publishing a repo
+    pypi-prep-commands: ''
+
+    # Name of the Docker repository (usually on DockerHub) that is the
+    # destination for images to be pushed to after building.
+    # Default is invalid - must be specified on every job.
+    docker-repo: 'default-and-invalid'
+
+    # URL of the Docker registry (server running a docker registry) that is the
+    # destination for images to be pushed to after building. If set, must
+    # include trailing slash as a separator before the repo name.
+    # Default is blank, which maps to DockerHub.
+    docker-registry: ''
+
+    # for matching files with file-include-regexp
+    all-files-regexp: '.*'
+    doc-files-regexp: '^docs/.*'
+
+    # regex to allow docs-only patchsets w/version bumps to skip code-level
+    # tests.  Have to also ignore the commit message on negative match,
+    # per: https://issues.jenkins-ci.org/browse/JENKINS-19891
+    code-files-regexp: '^(?!docs|VERSION|\/COMMIT_MSG).*$'
+    api-test-files-regexp: '^(?!docs|VERSION|\/COMMIT_MSG|Jenkinsfile-*).*$'
+
+    # Jenkins SSH host doc publisher
+    docs-ssh-host: 'guide.opencord.org'
+    docs-ssh-host-key: 'guide.opencord.org,52.9.82.207 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFHwOY3/8GucdKzBngH/FC08nHac/RJ/OheZp2+5EpOPXZG9zQW2YUbXH5A9pO76lI5CG3z3+huG62xEGo99UQU='
+
+    # siab helm-charts
+    siab-projects-regexp: '^(xos-core/.*|xos-profiles/seba-services/.*|xos-profiles/base-kubernetes/.*|xos-profiles/ponsim-pod/.*|workflows/att-workflow/.*|voltha/.*|onos/.*|mininet/.*|configs/seba-ponsim.yaml)$'
+
+    # Optionally allow JUnit results to be empty when test framework is set up,
+    # but no tests exist. Default behavior is to fail when test results are
+    # empty. Also will not vote if no test output exists - good for repos where
+    # tests or test output generation may not yet exist.
+    junit-allow-empty-results: false
+
+    # Allow xunit to not vote if no test files exist. Default is true because
+    # jUnit is the more commonly supported output format.
+    xunit-skip-if-no-test-files: true
+
+    # Unit test targets
+    # List of targets to run when testing a patchset, run with make or similar
+    # defaults to just 'test', multiple targets should be space separated
+    unit-test-targets: 'test'
+
+    # whether to "keep going" on multiple tests if one fails
+    # maps to the `-k` option passed to make in make-unit.yaml
+    unit-test-keep-going: false
+
+    # golang specific variables
+    # dest-gopath handles checking out patchsets and putting them into a GOPATH
+    # This portion of the path should be included: `$GOPATH/src/<dest-gopath>/<project>"
+    # If blank, golang related variables won't be set
+    dest-gopath: ''
+
+    # github organization
+    # Specifies the github organization to operate on.  Default is blank which
+    # may either be invalid, or specify that gerrit should be used instead.
+    # Currently used with: synopsys detect, github-release
+    github-organization: ''
+
+    # release targets
+    # List of targets run when creating a software release, run with make or
+    # similar. Default is "release", multiple targets may be space separated
+    # (when using make).
+    release-targets: 'release'
+
+    # artifact glob
+    # Shell glob expression used to select which files are included as binaries
+    # in a release.
+    # Currently used with: github-release
+    artifact-glob: ''
+
+    # JDK distribution to use
+    # Give the version of the JDK to use when building
+    # Parameter is used with `update-java-alternatives --set <jdk-distribution>`
+    jdk-distribution: 'java-11-amazon-corretto'
+
+    # skip directories
+    # Used to skip directories in supported tests
+    skip-dirs: ''
+
+    # maintainers
+    # Used to notify users in supported tests
+    maintainers: 'zdw@opennetworking.org'
+
+    # karaf-home
+    # Use to grab the logs or onos-diagnostics
+    karaf-home: 'apache-karaf-4.2.9'

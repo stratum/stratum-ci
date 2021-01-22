@@ -1,0 +1,95 @@
+# SPDX-FileCopyrightText: 2020 Open Networking Foundation <info@opennetworking.org>
+#
+# SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
+
+---
+# generic docker image building + dockerhub publishing tasks
+
+- job-template:
+    id: private-docker-publish
+    name: 'private-docker-publish_{project}'
+    description: |
+      Created by {id} job-template from ci-management/jjb/private-docker-publish.yaml, script pipeline/docker-publish.groovy
+
+    triggers:
+      - onf-infra-gerrit-trigger-merge:
+          gerrit-server-name: '{gerrit-server-name}'
+          project-regexp: '{project}'
+          branch-regexp: '{branch-regexp}'
+          file-include-regexp: '{all-files-regexp}'
+          dependency-jobs: '{dependency-jobs}'
+
+    properties:
+      - onf-infra-onfstaff-private:
+      - onf-infra-properties:
+          build-days-to-keep: '{build-days-to-keep}'
+          artifact-num-to-keep: '{artifact-num-to-keep}'
+
+    wrappers:
+      - lf-infra-wrappers:
+          build-timeout: '{build-timeout}'
+          jenkins-ssh-credential: '{jenkins-ssh-credential}'
+
+    parameters:
+      - string:
+          name: buildNode
+          default: '{bigger-build-node}'
+          description: 'Name of the Jenkins build executor to run the job on'
+
+      - string:
+          name: gitUrl
+          default: '$GIT_URL/$GERRIT_PROJECT'
+          description: 'URL to the git repo'
+
+      - string:
+          name: gitRef
+          default: '$GERRIT_PATCHSET_REVISION'
+          description: 'git ref to build (commit hash or tag)'
+
+      - string:
+          name: gitRefSpec
+          default: '$GERRIT_REFSPEC'
+          description: 'git refSpec to build (refs/changes/)'
+
+      - string:
+          name: projectName
+          default: '$GERRIT_PROJECT'
+          description: 'Name of the project in Gerrit'
+
+      - string:
+          name: branchName
+          default: '$GERRIT_BRANCH'
+          description: 'Branch of the project in Gerrit'
+
+      - string:
+          name: dockerRepo
+          default: '{docker-repo}'
+          description: "Docker repository to push to ('onosproject', etc.)"
+
+      - string:
+          name: dockerRegistry
+          default: '{docker-registry}'
+          description: "Docker registry to push to (blank for DockerHub)"
+
+      # AWS CPU arch names: `x86_64` `arm64` (which don't align to vendor names... *sigh*)
+      - string:
+          name: dockerArchList
+          default: 'x86_64'
+          description: "List of architectures to build containers on, pipe separated (nonfunctional currently)"
+
+      - string:
+          name: maintainers
+          default: '{maintainers}'
+          description: "The person that should be notified if this job fails"
+
+      - string:
+          name: extraEnvironmentVars
+          default: '{extraEnvironmentVars}'
+          description: "Provide extra environment variables to the build"
+
+    project-type: pipeline
+    concurrent: true
+    extraEnvironmentVars: ""
+    sandbox: true
+
+    dsl: !include-raw-escape: ../pipeline/docker-publish.groovy

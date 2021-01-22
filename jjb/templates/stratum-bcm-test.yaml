@@ -1,0 +1,56 @@
+# SPDX-FileCopyrightText: 2020 Open Networking Foundation <info@opennetworking.org>
+#
+# SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
+
+---
+# Job to run TestVectors on given switch
+
+- job-template:
+    id: stratum-bcm-test
+    name: '{id}'
+    description: |
+      Created by {id} job-template from ci-management/jjb/stratum-bcm-test.yaml, script ../pipeline/stratum-bcm-test-master.groovy
+    properties:
+      - onf-infra-properties:
+          build-days-to-keep: '15'
+          artifact-num-to-keep: '15'
+    wrappers:
+      - onf-infra-rsync-wrappers:
+          build-timeout: '{build-timeout}'
+    parameters:
+      - string:
+          name: BUILD_NODE
+          default: '{build-node}'
+          description: 'Name of the Jenkins build executor to run the job on'
+
+      - string:
+          name: SWITCH_NAME
+          default: 'x86-64-dell-z9100-c2538-r0'
+
+      - string:
+           name: REGISTRY_URL
+           default: 'registry.aetherproject.org/stratum-ccp'
+           description: 'Private registry URL'
+
+      - string:
+          name: DOCKER_IMAGE
+          default: 'stratum-bcm'
+
+      - string:
+          name: DOCKER_IMAGE_TAG
+          default: 'sdklt'
+
+      - string:
+          name: DEBIAN_PACKAGE_PATH
+          default: ''
+
+      - string:
+          name: DEBIAN_PACKAGE_NAME
+          default: ''
+
+    project-type: pipeline
+    concurrent: true
+    extraEnvironmentVars: ""
+    sandbox: true
+
+    dsl: !include-raw-escape: ../pipeline/stratum-bcm-test-master.groovy

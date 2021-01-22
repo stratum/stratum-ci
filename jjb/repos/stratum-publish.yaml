@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: 2020 Open Networking Foundation <info@opennetworking.org>
+#
+# SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
+
+- project:
+    name: stratum-publish
+    project: '{name}'
+    
+    jobs:
+        - 'stratum-publish':
+            build-timeout: 30
+            

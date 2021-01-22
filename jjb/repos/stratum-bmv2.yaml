@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: 2020 Open Networking Foundation <info@opennetworking.org>
+#
+# SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
+
+- project:
+    name: stratum-bmv2
+    project: '{name}'
+    
+    jobs:
+        - 'stratum-bmv2-build':
+            build-timeout: 30
+        - 'stratum-bmv2-test':
+            build-timeout: 30
+            
+            

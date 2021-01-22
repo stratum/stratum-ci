@@ -1,0 +1,65 @@
+pipeline {
+    agent {
+        label "${BUILD_NODE}"
+    }
+    options {
+        timeout(time: 120, unit: 'MINUTES')
+    }
+    stages {
+        stage('Build, Test and Publish') {
+            matrix {
+                axes {
+                    axis {
+                        name 'SDE_VERSION'
+                        values '9.1.0', '9.2.0', '9.3.0'
+                    }
+                    axis {
+                        name 'KERNEL_VERSION'
+                        values '4.14.49'
+                    }
+                }
+                agent {
+                    label "${BUILD_NODE}"
+                }
+                stages {
+                    stage("Build") {
+                        steps {
+                            sh returnStdout: false, label: "Start building stratum-${TARGET}:${SDE_VERSION}", script: ""
+                            build job: "stratum-${TARGET}-build", parameters: [
+                                string(name: 'SDE_VERSION', value: "${SDE_VERSION}"),
+                                string(name: 'KERNEL_VERSION', value: "${KERNEL_VERSION}"),
+                                string(name: 'REGISTRY_URL', value: "${REGISTRY_URL}"),
+                            ]
+                        }
+                    }
+                    stage('Test') {
+                        steps {
+                            sh returnStdout: false, label: "Start testing ${REGISTRY_URL}/stratum-${TARGET}:${SDE_VERSION}", script: ""
+                            build job: "stratum-${TARGET}-test-combined", parameters: [
+                                string(name: 'REGISTRY_URL', value: "${REGISTRY_URL}"),
+                                string(name: 'DOCKER_IMAGE', value: "stratum-${TARGET}"),
+                                string(name: 'DOCKER_IMAGE_TAG', value: "${SDE_VERSION}"),
+                                string(name: 'TARGET', value: "${TARGET}"),
+                            ]
+                        }
+                    }
+                    stage('Publish') {
+                        steps {
+                            sh returnStdout: false, label: "Start publishing ${REGISTRY_URL}/stratum-${TARGET}:${SDE_VERSION}", script: ""
+                            build job: "stratum-publish", parameters: [
+                                string(name: 'REGISTRY_URL', value: "${REGISTRY_URL}"),
+                                string(name: 'DOCKER_REPOSITORY_NAME', value: "stratum-${TARGET}"),
+                                string(name: 'DOCKER_IMAGE_TAG', value: "${SDE_VERSION}"),
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    }
+    /*post {
+        failure {
+            slackSend color: 'danger', message: "Test failed: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.RUN_DISPLAY_URL}|Open>)"
+        }
+    }*/
+}

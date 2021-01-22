@@ -1,0 +1,34 @@
+# SPDX-FileCopyrightText: 2020 Open Networking Foundation <info@opennetworking.org>
+#
+# SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
+
+- project:
+    name: stratum-bf
+    project: '{name}'
+    
+    jobs:
+        - 'stratum-bf':
+            build-timeout: 30
+            target: 'bf'
+        - 'stratum-bf-build':
+            build-timeout: 30
+            target: 'bf'
+        - 'stratum-bf-test-combined':
+            build-timeout: 30
+            target: 'bf'
+        - 'stratum-bf-test':
+            build-timeout: 30
+            target: 'bf'
+        - 'stratum-bf':
+            build-timeout: 30
+            target: 'bfrt'
+        - 'stratum-bf-build':
+            build-timeout: 30
+            target: 'bfrt'
+        - 'stratum-bf-test-combined':
+            build-timeout: 30
+            target: 'bfrt'
+        - 'stratum-bf-test':
+            build-timeout: 30
+            target: 'bfrt'
+            
