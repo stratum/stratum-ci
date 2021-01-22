@@ -11,7 +11,7 @@ pipeline {
                 step([$class: 'WsCleanup'])
                 withCredentials([file(credentialsId: 'JJB_INI', variable: 'jjb_ini')]) {
                     sh returnStdout: false, label: "Git Pull Stratum CI", script: """
-                        git clone https://github.com/stratum/stratum-ci.git -b jjb
+                        git clone https://github.com/stratum/stratum-ci.git
                         cd ${WORKSPACE}/stratum-ci
 			cp ${jjb_ini} jenkins.ini
 			virtualenv venv

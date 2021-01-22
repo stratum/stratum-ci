@@ -43,7 +43,7 @@ pipeline {
                                 script {
                                     try {
                                         sh returnStdout: false, label: "Get Stratum CI repo" , script: """
-                                            git clone https://github.com/stratum/stratum-ci.git -b jjb 
+                                            git clone https://github.com/stratum/stratum-ci.git 
                                         """
                                         test_config = readYaml file: "${WORKSPACE}/stratum-ci/resources/test-config.yaml"
                                         converted_tests = readYaml file: "${WORKSPACE}/stratum-ci/ptf_tv_resources/converted-tests.yaml"
