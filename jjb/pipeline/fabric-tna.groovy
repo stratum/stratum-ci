@@ -11,62 +11,62 @@ pipeline {
         stage("Start Testing") {
             environment {
                 SWITCH_CREDS = credentials("${SWITCH_NAME}-credentials")
-		DOCKER_CREDS = credentials("abhilash_docker_access")
+		        DOCKER_CREDS = credentials("abhilash_docker_access")
                 SWITCH_IP = '' 
-		SWITCH_PORT = 28000
+		        SWITCH_PORT = 28000
                 CONFIG_DIR = '/tmp/stratum_configs'
                 RESOURCE_DIR = '/tmp/barefoot'
                 TV_RUNNER_IMAGE = 'stratumproject/tvrunner:fabric-tna-binary'
-		test_config = ''
-		converted_tests = ''
-		test_list = ''
-		tv_dir = ''
-		stratum_configs_dir = ''
-		stratum_resources_dir = ''
-		ptf_configs_dir = ''
-		ptf_tv_resources_dir = ''
+                test_config = ''
+                converted_tests = ''
+                test_list = ''
+                tv_dir = ''
+                stratum_configs_dir = ''
+                stratum_resources_dir = ''
+                ptf_configs_dir = ''
+                ptf_tv_resources_dir = ''
             }
             steps {
                 script {
                     lock("${SWITCH_NAME}") {
                         node("${BUILD_NODE}") {
                             def WORKSPACE = pwd()
-        		    stage('Get fabric-tna') {
-                  	        step([$class: 'WsCleanup'])
-                		git branch: 'master', credentialsId: 'abhilash_github', url: 'https://github.com/stratum/fabric-tna.git'
-				sh returnStdout: false, label: "Build fabric-tna", script: """
-				    docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}
-                    		    make ${PROFILE} SDE_DOCKER_IMG=${SDE_DOCKER_IMAGE}:${SDE_DOCKER_IMAGE_TAG}
-                		"""
-            		    }
-        		    stage("Get CI Configuration"){
-                		script {
-                    		    try {
-                        		sh returnStdout: false, label: "Get Stratum CI repo" , script: """
-                            		    git clone https://github.com/stratum/stratum-ci.git -b jjb 
-                        		"""
-                        		test_config = readYaml file: "${WORKSPACE}/stratum-ci/resources/test-config.yaml"
-                        		converted_tests = readYaml file: "${WORKSPACE}/stratum-ci/ptf_tv_resources/converted-tests.yaml"
-					test_list = converted_tests."${PROFILE}"
-                        		tv_dir = "${WORKSPACE}/ptf/tests/ptf/testvectors"
-                		        SWITCH_IP = """${test_config.switches["${SWITCH_NAME}"].ip}"""
-                        		stratum_configs_dir = "${WORKSPACE}/stratum-ci/stratum_configs"
-                        		stratum_resources_dir = "${WORKSPACE}/stratum-ci/resources/barefoot"
-                        		ptf_configs_dir = "${WORKSPACE}/stratum-ci/ptf_configs"
-                        		ptf_tv_resources_dir = "${WORKSPACE}/stratum-ci/ptf_tv_resources"
-                    		    } catch (err) {
-                        		echo "Error reading ${WORKSPACE}/stratum-ci/resources/test-config.yaml"
-                        		throw err
-                    		    }
-                		}
-            		    }
-        		    stage("Generate TestVectors for ${PROFILE} profile") {
-                		sh returnStdout: false, label: "Generate TestVectors from fabric-tna ptf Tests", script: """
-                		    cp ${ptf_configs_dir}/${SWITCH_NAME}/port_map.json ${WORKSPACE}/ptf/tests/ptf
-                		    cd ${WORKSPACE}/ptf
-                		    SDE_VERSION=${SDE_VERSION} run/tv/run ${PROFILE} PORTMAP=port_map.json GRPCADDR=${SWITCH_IP}:${SWITCH_PORT} CPUPORT=${CPU_PORT}
-                		"""
-            		    }
+                            stage('Get fabric-tna') {
+                                step([$class: 'WsCleanup'])
+                                git branch: 'main', credentialsId: 'abhilash_github', url: 'https://github.com/stratum/fabric-tna.git'
+                                sh returnStdout: false, label: "Build fabric-tna", script: """
+                                    docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}
+                                    make ${PROFILE} SDE_DOCKER_IMG=${SDE_DOCKER_IMAGE}:${SDE_DOCKER_IMAGE_TAG}
+                                """
+                            }
+                            stage("Get CI Configuration"){
+                                script {
+                                    try {
+                                        sh returnStdout: false, label: "Get Stratum CI repo" , script: """
+                                            git clone https://github.com/stratum/stratum-ci.git -b jjb 
+                                        """
+                                        test_config = readYaml file: "${WORKSPACE}/stratum-ci/resources/test-config.yaml"
+                                        converted_tests = readYaml file: "${WORKSPACE}/stratum-ci/ptf_tv_resources/converted-tests.yaml"
+                                        test_list = converted_tests."${PROFILE}"
+                                        tv_dir = "${WORKSPACE}/ptf/tests/ptf/testvectors"
+                                        SWITCH_IP = """${test_config.switches["${SWITCH_NAME}"].ip}"""
+                                        stratum_configs_dir = "${WORKSPACE}/stratum-ci/stratum_configs"
+                                        stratum_resources_dir = "${WORKSPACE}/stratum-ci/resources/barefoot"
+                                        ptf_configs_dir = "${WORKSPACE}/stratum-ci/ptf_configs"
+                                        ptf_tv_resources_dir = "${WORKSPACE}/stratum-ci/ptf_tv_resources"
+                                    } catch (err) {
+                                        echo "Error reading ${WORKSPACE}/stratum-ci/resources/test-config.yaml"
+                                        throw err
+                                    }
+                                }
+                            }
+                            stage("Generate TestVectors for ${PROFILE} profile") {
+                                sh returnStdout: false, label: "Generate TestVectors from fabric-tna ptf Tests", script: """
+                                    cp ${ptf_configs_dir}/${SWITCH_NAME}/port_map.json ${WORKSPACE}/ptf/tests/ptf
+                                    cd ${WORKSPACE}/ptf
+                                    SDE_VERSION=${SDE_VERSION} run/tv/run ${PROFILE} PORTMAP=port_map.json GRPCADDR=${SWITCH_IP}:${SWITCH_PORT} CPUPORT=${CPU_PORT}
+                                """
+                            }
                             stage("Start Stratum on ${SWITCH_NAME}") {
                                 sh returnStdout: false, label: "Copy Config Files", script: """
                                     ssh-keyscan ${SWITCH_IP} >> ~/.ssh/known_hosts
@@ -112,7 +112,7 @@ pipeline {
                                         }
                                         currentBuild.result = 'SUCCESS'
                                     } catch(err) {
-					throw err
+					                    throw err
                                         currentBuild.result = 'FAILURE'
                                     } finally {
                                         script {
@@ -128,9 +128,9 @@ pipeline {
           
                                             csv_list = csv_list.trim()
                                             for( String csv_name : csv_list.split() ) {
-						sh label: "Dummy", script: """
-						    echo "place holder for rscript"
-						"""
+                                                sh label: "Dummy", script: """
+                                                    echo "place holder for rscript"
+                                                """
                                             }
                                             archiveArtifacts artifacts: "testvectors-runner/results/tv_result*.csv", allowEmptyArchive: true
                                         }
