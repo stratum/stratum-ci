@@ -1,12 +1,3 @@
-/*
-Build Parameters
-BUILD_NODE: p4-dev
-DOCKER_IMAGE: 10.128.13.253:5000/stratum-bcm
-DOCKER_IMAGE_TAG: sdklt
-DEBIAN_PACAKGE_NAME: stratum_bcm_opennsa_deb.deb
-DEBIAN_PACKAGE_PATH: /var/jenkins
-*/
-
 import org.jenkins.plugins.lockableresources.LockableResourcesManager as LRM
 def test_config = null
 
@@ -66,8 +57,9 @@ pipeline {
                                                 ]) {
                                                     try {
                                                         echo switch_ip
-							// sh(script:'ssh-keyscan switch_ip >> ~/.ssh/known_hosts')
-                                                        def hasDocker = sh(script:'''sshpass -p $password ssh $username@'''+switch_ip+''' "which docker"''', returnStdout:true).trim()
+							sh(script:'ssh-keyscan '+switch_ip+' >> ~/.ssh/known_hosts')
+                                                        //def hasDocker = sh(script:'''sshpass -p $password ssh $username@'''+switch_ip+''' "which docker"''', returnStdout:true).trim()
+							def hasDocker = sh(script:'sshpass -p $password ssh $username@'+switch_ip+' "which docker"',returnStdout:true).trim()
                                                         tests[switch_name+"-docker"] = {
                                                             node {
                                                                 stage(switch_name) {sh returnStdout: false, label: "Start testing on "+switch_name+" with image ${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG}", script: ""

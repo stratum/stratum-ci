@@ -1,14 +1,3 @@
-/*
-Build Parameters
-BUILD_NODE: p4-dev
-SWITCH_NAME: x86-64-inventec-d7032q28b-r0
-REGISTRY_URL: registry.aetherproject.org/stratum-ccp
-DOCKER_IMAGE: 10.128.13.253:5000/stratum-bcm
-DOCKER_IMAGE_TAG: 3.16.56
-DEBIAN_PACKAGE_PATH:/var/jenkins
-DEBIAN_PACKAGE_NAME:stratum_bcm_opennsa_deb.deb
-*/
-
 def test_config = null
 
 pipeline {

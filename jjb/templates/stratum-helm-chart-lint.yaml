@@ -54,4 +54,4 @@
     project-type: pipeline
     concurrent: false
 
-    dsl: !include-raw-escape: ../../Jenkinsfiles/Jenkinsfile-stratum-helm-charts-lint.groovy
+    dsl: !include-raw-escape: ../pipeline/stratum-helm-charts-lint.groovy

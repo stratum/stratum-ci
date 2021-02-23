@@ -1,12 +1,3 @@
-/*
-Build Parameters
-BUILD_NODE: p4-dev
-SWITCH_NAME: x86-64-stordis-bf2556x-1t-r0
-REGISTRY_URL: registry.aetherproject.org/stratum-ccp
-DOCKER_IMAGE: 10.128.13.253:5000/stratum-bf
-DOCKER_IMAGE_TAG: bf-sde-8.9.2-linux-4.14.49-OpenNetworkLinux
-*/
-
 def test_config = null
 
 pipeline {

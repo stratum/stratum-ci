@@ -1,12 +1,3 @@
-/*
-Build Parameters
-BUILD_NODE: p4-dev
-DOCKER_REGISTRY_IP: 10.128.13.253
-DOCKER_REGISTRY_PORT: 5000
-BAZEL_DISK_CACHE: /home/sdn/bazel-disk-cache
-SDE: sdklt
-*/
-
 pipeline {
     agent {
         label "${BUILD_NODE}"

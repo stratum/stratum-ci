@@ -1,10 +1,3 @@
-/*
-Build Parameters
-BUILD_NODE: p4-dev
-DOCKER_IMAGE: 10.128.13.253:5000/stratum-bf
-DOCKER_IMAGE_TAG: bf-sde-8.9.2-linux-4.14.49-OpenNetworkLinux
-*/
-
 import org.jenkins.plugins.lockableresources.LockableResourcesManager as LRM
 def test_config = null
 
@@ -43,7 +36,7 @@ pipeline {
                             tests[switch_name] = {
                                 node {
                                     stage(switch_name) {sh returnStdout: false, label: "Start testing on "+switch_name+" with image ${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG}", script: ""
-                                        build job: "stratum-bf-test", parameters: [
+                                        build job: "stratum-${TARGET}-test", parameters: [
                                             string(name: 'SWITCH_NAME', value: switch_name),
                                             string(name: 'DOCKER_IMAGE', value: "${DOCKER_IMAGE}"),
                                             string(name: 'DOCKER_IMAGE_TAG', value: "${DOCKER_IMAGE_TAG}"),

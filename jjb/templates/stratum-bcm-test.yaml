@@ -9,7 +9,7 @@
     id: stratum-bcm-test
     name: '{id}'
     description: |
-      Created by {id} job-template from ci-management/jjb/stratum-bcm-test.yaml, script Jenkinsfiles/Jenkinsfile-stratum-bcm-test-master.groovy
+      Created by {id} job-template from ci-management/jjb/stratum-bcm-test.yaml, script ../pipeline/stratum-bcm-test-master.groovy
     properties:
       - onf-infra-properties:
           build-days-to-keep: '15'
@@ -53,4 +53,4 @@
     extraEnvironmentVars: ""
     sandbox: true
 
-    dsl: !include-raw-escape: ../../Jenkinsfiles/Jenkinsfile-stratum-bcm-test-master.groovy
+    dsl: !include-raw-escape: ../pipeline/stratum-bcm-test-master.groovy

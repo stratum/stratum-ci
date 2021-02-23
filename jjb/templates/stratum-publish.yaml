@@ -8,7 +8,7 @@
     id: stratum-publish
     name: '{id}'
     description: |
-      Created by {id} job-template from ci-management/jjb/stratum-publish.yaml, script Jenkinsfiles/Jenkinsfile-stratum-publish.groovy
+      Created by {id} job-template from ci-management/jjb/stratum-publish.yaml, script ../pipeline/stratum-publish.groovy
     properties:
       - onf-infra-properties:
           build-days-to-keep: '15'
@@ -40,4 +40,4 @@
     extraEnvironmentVars: ""
     sandbox: true
 
-    dsl: !include-raw-escape: ../../Jenkinsfiles/Jenkinsfile-stratum-publish.groovy
+    dsl: !include-raw-escape: ../pipeline/stratum-publish.groovy

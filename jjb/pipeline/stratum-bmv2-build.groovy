@@ -1,12 +1,3 @@
-/*
-Build Parameters
-BUILD_NODE: p4-dev
-DOCKER_REGISTRY_IP: 10.128.13.253
-DOCKER_REGISTRY_PORT: 5000
-IMAGE_NAME: tvrunner:bmv2
-BAZEL_DISK_CACHE: /home/sdn/bazel-disk-cache
-*/
-
 pipeline {
     agent {
         label "${BUILD_NODE}"

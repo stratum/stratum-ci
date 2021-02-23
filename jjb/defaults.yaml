@@ -22,6 +22,7 @@
     # name of the SSH key to use in most cases
     jenkins-ssh-credential: 'cord-jenkins-ssh'
     gerrit-ssh-credential: 'gerrit-jenkins-user'
+    aws-s3-credential: 'AKIAR6Z4ESHHIXKSMOXU'
 
     # by default, don't depend on other jobs
     dependency-jobs: ''

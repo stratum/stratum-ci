@@ -7,9 +7,9 @@
 
 - job-template:
     id: stratum-bf
-    name: '{id}'
+    name: 'stratum-{target}'
     description: |
-      Created by {id} job-template from ci-management/jjb/stratum-bf.yaml, script Jenkinsfiles/Jenkinsfile-stratum-bf.groovy
+      Created by {id} job-template from ci-management/jjb/stratum-bf.yaml, script ../pipeline/stratum-bf.groovy
     properties:
       - onf-infra-properties:
           build-days-to-keep: '15'
@@ -28,10 +28,16 @@
           default: 'registry.aetherproject.org/stratum-ccp'
           description: 'Private registry URL'
 
+      - string:
+          name: TARGET
+          default: '{target}'
+          description: 'Stratum barefoot target (bf or bfrt)'
+    triggers:
+      - timed: '{once-a-day}'
 
     project-type: pipeline
     concurrent: true
     extraEnvironmentVars: ""
     sandbox: true
 
-    dsl: !include-raw-escape: ../../Jenkinsfiles/Jenkinsfile-stratum-bf.groovy
+    dsl: !include-raw-escape: ../pipeline/stratum-bf.groovy
