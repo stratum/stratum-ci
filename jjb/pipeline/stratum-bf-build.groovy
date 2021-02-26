@@ -17,18 +17,24 @@ pipeline {
             }
         }
         stage('Build') {
-	    environment {
-                REGISTRY_CREDS = credentials("aether-registry-credentials")
-            }
             steps {
                 sh returnStdout: false, label: "Start building stratum-${STRATUM_TARGET}:${SDE_VERSION}", script: """
                     git clone https://github.com/stratum/stratum.git
                     cd ${WORKSPACE}/stratum
                     cd ${WORKSPACE}/stratum/stratum/hal/bin/barefoot/docker
                     STRATUM_TARGET=stratum_${STRATUM_TARGET} SDE_INSTALL_TAR=${WORKSPACE}/${SDE_TAR} ./build-stratum-bf-container.sh
-                    docker tag stratumproject/stratum-${STRATUM_TARGET}:${SDE_VERSION} ${REGISTRY_URL}/stratum-${STRATUM_TARGET}:${SDE_VERSION}
+                """
+            }
+        }
+	stage('Push') {
+	    environment {
+                REGISTRY_CREDS = credentials("${REGISTRY_CREDENTIAL}")
+            }
+            steps {
+                sh returnStdout: false, label: "Push stratum-${STRATUM_TARGET}:${SDE_VERSION} to ${REGISTRY_URL}", script: """
                     docker login ${REGISTRY_URL} -u ${REGISTRY_CREDS_USR} -p ${REGISTRY_CREDS_PSW}
-                    docker push ${REGISTRY_URL}/stratum-${STRATUM_TARGET}:${SDE_VERSION}
+                    docker tag stratumproject/stratum-${STRATUM_TARGET}:${SDE_VERSION} ${REGISTRY_URL}/stratum-${STRATUM_TARGET}:${DOCKER_IMAGE_TAG}
+                    docker push ${REGISTRY_URL}/stratum-${STRATUM_TARGET}:${DOCKER_IMAGE_TAG}
                 """
             }
         }

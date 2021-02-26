@@ -22,7 +22,11 @@
     # name of the SSH key to use in most cases
     jenkins-ssh-credential: 'cord-jenkins-ssh'
     gerrit-ssh-credential: 'gerrit-jenkins-user'
+    
+    # name of the credentials
     aws-s3-credential: 'AKIAR6Z4ESHHIXKSMOXU'
+    aether-registry-credential: 'aether-registry-credentials'
+    onf-registry-credential: 'onf-registry-credentials'
 
     # by default, don't depend on other jobs
     dependency-jobs: ''
