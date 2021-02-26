@@ -11,7 +11,8 @@ pipeline {
         stage("Start Testing") {
             environment {
                 SWITCH_CREDS = credentials("${SWITCH_NAME}-credentials")
-		        DOCKER_CREDS = credentials("abhilash_docker_access")
+                DOCKER_CREDS = credentials("abhilash_docker_access")
+                REGISTRY_CREDS = credentials("${REGISTRY_CREDENTIAL}")
                 SWITCH_IP = '' 
 		        SWITCH_PORT = 28000
                 CONFIG_DIR = '/tmp/stratum_configs'
@@ -36,7 +37,7 @@ pipeline {
                                 git branch: 'main', credentialsId: 'abhilash_github', url: 'https://github.com/stratum/fabric-tna.git'
                                 sh returnStdout: false, label: "Build fabric-tna", script: """
                                     docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}
-                                    make ${PROFILE} SDE_DOCKER_IMG=${SDE_DOCKER_IMAGE}:${SDE_DOCKER_IMAGE_TAG}
+                                    make ${PROFILE}
                                 """
                             }
                             stage("Get CI Configuration"){
@@ -64,7 +65,7 @@ pipeline {
                                 sh returnStdout: false, label: "Generate TestVectors from fabric-tna ptf Tests", script: """
                                     cp ${ptf_configs_dir}/${SWITCH_NAME}/port_map.json ${WORKSPACE}/ptf/tests/ptf
                                     cd ${WORKSPACE}/ptf
-                                    SDE_VERSION=${SDE_VERSION} run/tv/run ${PROFILE} PORTMAP=port_map.json GRPCADDR=${SWITCH_IP}:${SWITCH_PORT} CPUPORT=${CPU_PORT}
+                                    run/tv/run ${PROFILE} PORTMAP=port_map.json GRPCADDR=${SWITCH_IP}:${SWITCH_PORT} CPUPORT=${CPU_PORT}
                                 """
                             }
                             stage("Start Stratum on ${SWITCH_NAME}") {
@@ -80,6 +81,7 @@ pipeline {
                                 sh returnStdout: false, label: "Starting Stratum with Image ${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG}", script: """
                                     sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "tmux kill-session -t CI || true"
                                     sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "tmux new -d -s CI || true"
+                                    sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "tmux send-keys -t CI.0 ENTER 'docker login ${REGISTRY_URL} -u ${REGISTRY_CREDS_USR} -p ${REGISTRY_CREDS_PSW}' ENTER"
                                     sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "tmux send-keys -t CI.0 ENTER 'docker pull ${REGISTRY_URL}/${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG}' ENTER"
                                     sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "tmux send-keys -t CI.0 ENTER 'cd ${RESOURCE_DIR}' ENTER"
                                     sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "tmux send-keys -t CI.0 ENTER 'DOCKER_IMAGE=${REGISTRY_URL}/${DOCKER_IMAGE} DOCKER_IMAGE_TAG=${DOCKER_IMAGE_TAG} CHASSIS_CONFIG=${CONFIG_DIR}/${SWITCH_NAME}/chassis_config.pb.txt ./restart-stratum.sh --bf-sim --bf-switchd-background=false' ENTER"
@@ -149,6 +151,11 @@ pipeline {
                     }
                 }
             }
+        }
+    }
+    post {
+        failure {
+            slackSend channel: "#aether-test-automation", color: 'Be6325', message: "Test failed: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.RUN_DISPLAY_URL}|Open>)"
         }
     }
 }

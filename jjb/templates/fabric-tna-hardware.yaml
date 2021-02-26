@@ -6,7 +6,7 @@
     id: fabric-tna
     name: '{id}-{switch_name}'
     description: |
-      Created by {id} job-template from ci-management/jjb/favric-tna-hardware.yaml, script ../pipeline/fabric-tna.groovy
+      Created by {id} job-template from ci-management/jjb/fabric-tna-hardware.yaml, script ../pipeline/fabric-tna.groovy
     properties:
       - onf-infra-onfstaff-private:
       - onf-infra-properties:
@@ -36,19 +36,7 @@
 
       - string:
           name: DOCKER_IMAGE_TAG
-          default: 'latest-9.2.0'
-
-      - string:
-          name: SDE_DOCKER_IMAGE
-          default: 'opennetworking/bf-sde'
-
-      - string:
-          name: SDE_DOCKER_IMAGE_TAG
-          default: '9.2.0-p4c'
-
-      - string:
-          name: SDE_VERSION
-          default: '9.2.0'
+          default: 'latest-9.3.1'
 
       - string:
           name: PROFILE
