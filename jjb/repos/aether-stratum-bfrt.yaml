@@ -10,4 +10,7 @@
         - 'aether-stratum-bfrt-build-nightly':
             build-timeout: 30
             sde-version: '9.3.1'
+        - 'aether-stratum-bfrt-build-weekly':
+            build-timeout: 30
+            sde-version: '9.3.1'
             
