@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage("Start Testing") {
             environment {
-                REGISTRY_CREDS = credentials("aether-registry-credentials")
+                REGISTRY_CREDS = credentials("${REGISTRY_CREDENTIAL}")
                 SWITCH_CREDS = credentials("${SWITCH_NAME}-credentials")
                 SWITCH_IP = ''
                 CONFIG_DIR = '/tmp/stratum_configs'

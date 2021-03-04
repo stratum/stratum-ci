@@ -37,7 +37,7 @@ pipeline {
                             for (String sdk : test_config.switches[switch_name].supported_sdks) {
                                 if (sdk == DOCKER_IMAGE_TAG ){
                                     tests[switch_name+"-debian"] = {
-                                        node {
+                                        node("${BUILD_NODE}") {
                                             stage(switch_name) {sh returnStdout: false, label: "Start testing on "+switch_name+" with image ${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG}", script: ""
                                                 build job: "stratum-bcm-test", parameters: [
                                                     string(name: 'SWITCH_NAME', value: switch_name),
@@ -47,7 +47,7 @@ pipeline {
                                             }
                                         }
                                     }
-                                    node {
+                                    node("${BUILD_NODE}") {
                                         stage('Docker'){
                                             script {
                                                 withCredentials([
@@ -56,10 +56,8 @@ pipeline {
                                                     passwordVariable: 'password')
                                                 ]) {
                                                     try {
-                                                        echo switch_ip
-							sh(script:'ssh-keyscan '+switch_ip+' >> ~/.ssh/known_hosts')
-                                                        //def hasDocker = sh(script:'''sshpass -p $password ssh $username@'''+switch_ip+''' "which docker"''', returnStdout:true).trim()
-							def hasDocker = sh(script:'sshpass -p $password ssh $username@'+switch_ip+' "which docker"',returnStdout:true).trim()
+							                            sh(script:'ssh-keyscan '+switch_ip+' >> ~/.ssh/known_hosts')
+							                            def hasDocker = sh(script:'sshpass -p $password ssh $username@'+switch_ip+' "which docker"',returnStdout:true).trim()
                                                         tests[switch_name+"-docker"] = {
                                                             node {
                                                                 stage(switch_name) {sh returnStdout: false, label: "Start testing on "+switch_name+" with image ${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG}", script: ""
