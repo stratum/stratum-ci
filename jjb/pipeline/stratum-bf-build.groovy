@@ -33,8 +33,8 @@ pipeline {
             steps {
                 sh returnStdout: false, label: "Push stratum-${STRATUM_TARGET}:${SDE_VERSION} to ${REGISTRY_URL}", script: """
                     docker login ${REGISTRY_URL} -u ${REGISTRY_CREDS_USR} -p ${REGISTRY_CREDS_PSW}
-                    docker tag stratumproject/stratum-${STRATUM_TARGET}:${SDE_VERSION} ${REGISTRY_URL}/stratum-${STRATUM_TARGET}:${DOCKER_IMAGE_TAG}
-                    docker push ${REGISTRY_URL}/stratum-${STRATUM_TARGET}:${DOCKER_IMAGE_TAG}
+                    docker tag stratumproject/stratum-${STRATUM_TARGET}:${SDE_VERSION} ${REGISTRY_URL}/stratum-${STRATUM_TARGET}:${SDE_VERSION}
+                    docker push ${REGISTRY_URL}/stratum-${STRATUM_TARGET}:${SDE_VERSION}
                 """
             }
         }
