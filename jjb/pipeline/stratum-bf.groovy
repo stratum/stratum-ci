@@ -11,7 +11,7 @@ pipeline {
                 axes {
                     axis {
                         name 'SDE_VERSION'
-                        values '9.1.0', '9.2.0', '9.3.0'
+                        values '9.2.0', '9.3.1', '9.4.0'
                     }
                     axis {
                         name 'KERNEL_VERSION'
