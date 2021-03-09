@@ -49,6 +49,11 @@
           name: DEBIAN_PACKAGE_NAME
           default: ''
 
+      - string:
+          name: AWS_S3_CREDENTIAL
+          default: '{aws-s3-credential}'
+          description: 'Credentials name for AWS S3 bucket'
+
     project-type: pipeline
     concurrent: true
     extraEnvironmentVars: ""
