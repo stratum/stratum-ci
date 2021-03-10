@@ -33,6 +33,11 @@
           default: '{onf-registry-credential}'
           description: 'Credentials name for docker registry'
 
+      - string:
+          name: AWS_S3_CREDENTIAL
+          default: '{aws-s3-credential}'
+          description: 'Credentials name for AWS S3 bucket'
+
     triggers:
       - timed: '{once-a-day}'
 
