@@ -32,7 +32,7 @@
 
       - string:
           name: REGISTRY_URL
-          default: 'registry.openentworking.org/stratum-ccp'
+          default: 'registry.opennetworking.org/stratum-ccp'
           description: 'Private registry URL'
 
       - string:
