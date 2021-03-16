@@ -6,19 +6,20 @@ pipeline {
     }
     options {
         timeout(time: 60, unit: 'MINUTES')
+        withAWS(credentials:"${AWS_S3_CREDENTIAL}")
     }
     stages {
         stage("Start Testing") {
             environment {
-                REGISTRY_CREDS = credentials("aether-registry-credentials")
+                REGISTRY_CREDS = credentials("${REGISTRY_CREDENTIAL}")
                 SWITCH_CREDS = credentials("${SWITCH_NAME}-credentials")
                 SWITCH_IP = ''
                 CONFIG_DIR = '/tmp/stratum_configs'
                 RESOURCE_DIR = '/tmp/bcm'
-		tv_config_dir = ''
-		stratum_configs_dir = ''
-		stratum_resources_dir = ''
-		install_debian_script = ''
+		        tv_config_dir = ''
+		        stratum_configs_dir = ''
+		        stratum_resources_dir = ''
+		        install_debian_script = ''
             }
             steps {
                 script {
@@ -57,9 +58,10 @@ pipeline {
                                         sshpass -p $SWITCH_CREDS_PSW scp -r ${stratum_resources_dir} $SWITCH_CREDS_USR@$SWITCH_IP:${RESOURCE_DIR}
                                     """
                                     if (params.DEBIAN_PACKAGE_NAME != '' && params.DEBIAN_PACKAGE_PATH != '') {
+                                        s3Download(file:"${DEBIAN_PACKAGE_NAME}", bucket:'stratum-artifacts', path:"${DEBIAN_PACKAGE_NAME}", force:true)
                                         sh returnStdout: false, label: "Install Stratum Debian Package", script: """
                                             sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "pkill stratum || true"
-                                            sshpass -p $SWITCH_CREDS_PSW scp ${DEBIAN_PACKAGE_PATH}/${DEBIAN_PACKAGE_NAME} $SWITCH_CREDS_USR@$SWITCH_IP:/tmp               
+                                            sshpass -p $SWITCH_CREDS_PSW scp ${WORKSPACE}/${DEBIAN_PACKAGE_NAME} $SWITCH_CREDS_USR@$SWITCH_IP:/tmp               
                                             sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "tmux kill-session -t CI || true"
                                             sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "tmux new -d -s CI || true"
                                             sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "tmux send-keys -t CI.0 ENTER 'DEBIAN_PACKAGE_NAME=${DEBIAN_PACKAGE_NAME} ${RESOURCE_DIR}/install_bcm_debian_package.sh; tmux wait-for -S install' C-m\\; wait-for install"

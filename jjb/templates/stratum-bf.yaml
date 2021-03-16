@@ -25,13 +25,19 @@
 
       - string:
           name: REGISTRY_URL
-          default: 'registry.aetherproject.org/stratum-ccp'
+          default: 'registry.opennetworking.org/stratum-ccp'
           description: 'Private registry URL'
+
+      - string:
+          name: REGISTRY_CREDENTIAL
+          default: '{onf-registry-credential}'
+          description: 'Credentials name for docker registry'
 
       - string:
           name: TARGET
           default: '{target}'
           description: 'Stratum barefoot target (bf or bfrt)'
+
     triggers:
       - timed: '{once-a-day}'
 

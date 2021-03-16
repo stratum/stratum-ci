@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('Pull') {
             environment {
-                REGISTRY_CREDS = credentials("aether-registry-credentials")
+                REGISTRY_CREDS = credentials("${REGISTRY_CREDENTIAL}")
             }
             steps {
                 sh returnStdout: false, label: "Start publishing ${DOCKER_REPOSITORY_NAME}:${DOCKER_IMAGE_TAG}", script: """
