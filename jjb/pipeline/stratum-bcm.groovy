@@ -26,9 +26,10 @@ pipeline {
                         steps {
                             sh returnStdout: false, label: "Start building stratum-bcm:${SDE}", script: ""
                             build job: "stratum-bcm-build", parameters: [
-				string(name: 'KERNEL_VERSION', value: "${KERNEL_VERSION}"),
+				                string(name: 'KERNEL_VERSION', value: "${KERNEL_VERSION}"),
                                 string(name: 'SDE', value: "${SDE}"),
                                 string(name: 'REGISTRY_URL', value: "${REGISTRY_URL}"),
+                                string(name: 'REGISTRY_CREDENTIAL', value: "${REGISTRY_CREDENTIAL}"),
                             ]
                         }
                     }
@@ -37,8 +38,12 @@ pipeline {
                             sh returnStdout: false, label: "Start testing ${REGISTRY_URL}/stratum-bcm:${SDE}", script: ""
                             build job: "stratum-bcm-test-combined", parameters: [
                                 string(name: 'REGISTRY_URL', value: "${REGISTRY_URL}"),
+                                string(name: 'REGISTRY_CREDENTIAL', value: "${REGISTRY_CREDENTIAL}"),
+                                string(name: 'AWS_S3_CREDENTIAL', value: "${AWS_S3_CREDENTIAL}"),
                                 string(name: 'DOCKER_IMAGE', value: "stratum-bcm"),
                                 string(name: 'DOCKER_IMAGE_TAG', value: "${SDE}"),
+                                string(name: 'DEBIAN_PACKAGE_PATH', value: "path"),
+                                string(name: 'DEBIAN_PACKAGE_NAME', value: "stratum_bcm_${SDE}_deb.deb"),
                             ]
                         }
                     }
@@ -47,6 +52,7 @@ pipeline {
                             sh returnStdout: false, label: "Start publishing ${REGISTRY_URL}/stratum-bcm:${SDE}", script: ""
                             build job: "stratum-publish", parameters: [
                                 string(name: 'REGISTRY_URL', value: "${REGISTRY_URL}"),
+                                string(name: 'REGISTRY_CREDENTIAL', value: "${REGISTRY_CREDENTIAL}"),
                                 string(name: 'DOCKER_REPOSITORY_NAME', value: "stratum-bcm"),
                                 string(name: 'DOCKER_IMAGE_TAG', value: "${SDE}"),
                             ]

@@ -14,6 +14,11 @@ pipeline {
             steps {
                 step([$class: 'WsCleanup'])
                 s3Download(file:"${SDE_TAR}", bucket:'stratum-artifacts', path:"${SDE_TAR}", force:true)
+                script {
+                    if(params.DOCKER_IMAGE_TAG == '') {
+                    DOCKER_IMAGE_TAG=sh(script:'date +%Y%m%d', returnStdout:true).trim()+"-"+SDE_VERSION
+                    }
+                }
             }
         }
         stage('Build') {
@@ -26,15 +31,15 @@ pipeline {
                 """
             }
         }
-	stage('Push') {
-	    environment {
-                REGISTRY_CREDS = credentials("${REGISTRY_CREDENTIAL}")
+        stage('Push') {
+            environment {
+                    REGISTRY_CREDS = credentials("${REGISTRY_CREDENTIAL}")
             }
             steps {
                 sh returnStdout: false, label: "Push stratum-${STRATUM_TARGET}:${SDE_VERSION} to ${REGISTRY_URL}", script: """
                     docker login ${REGISTRY_URL} -u ${REGISTRY_CREDS_USR} -p ${REGISTRY_CREDS_PSW}
-                    docker tag stratumproject/stratum-${STRATUM_TARGET}:${SDE_VERSION} ${REGISTRY_URL}/stratum-${STRATUM_TARGET}:${SDE_VERSION}
-                    docker push ${REGISTRY_URL}/stratum-${STRATUM_TARGET}:${SDE_VERSION}
+                    docker tag stratumproject/stratum-${STRATUM_TARGET}:${SDE_VERSION} ${REGISTRY_URL}/stratum-${STRATUM_TARGET}:${DOCKER_IMAGE_TAG}
+                    docker push ${REGISTRY_URL}/stratum-${STRATUM_TARGET}:${DOCKER_IMAGE_TAG}
                 """
             }
         }

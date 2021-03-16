@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: 2020 Open Networking Foundation <info@opennetworking.org>
+#
+# SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
+
+- project:
+    name: aether-stratum-bfrt
+    project: '{name}'
+    
+    jobs:
+        - 'aether-stratum-bfrt-build-nightly':
+            build-timeout: 30
+            sde-version: '9.3.1'
+        - 'aether-stratum-bfrt-build-weekly':
+            build-timeout: 30
+            sde-version: '9.3.1'
+            

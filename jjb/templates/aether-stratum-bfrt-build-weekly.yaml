@@ -3,13 +3,13 @@
 # SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
 
 ---
-# Job to run TestVectors on given switch
+# Job to build stratum barefoot docker image
 
 - job-template:
-    id: stratum-bcm-test
-    name: '{id}'
+    id: aether-stratum-bfrt-build-weekly
+    name: 'aether-stratum-bfrt-build-weekly'
     description: |
-      Created by {id} job-template from ci-management/jjb/stratum-bcm-test.yaml, script ../pipeline/stratum-bcm-test-master.groovy
+      Created by {id} job-template from ci-management/jjb/aether-stratum-bfrt-build-weekly.yaml, script ../pipeline/aether-stratum-bfrt-build.groovy
     properties:
       - onf-infra-properties:
           build-days-to-keep: '15'
@@ -24,43 +24,45 @@
           description: 'Name of the Jenkins build executor to run the job on'
 
       - string:
-          name: SWITCH_NAME
-          default: 'x86-64-dell-z9100-c2538-r0'
+          name: KERNEL_VERSION
+          default: '4.14.49'
+          description: 'Kernel version to build stratum bfrt'
 
       - string:
-           name: REGISTRY_URL
-           default: 'registry.opennetworking.org/stratum-ccp'
-           description: 'Private registry URL'
+          name: SDE_VERSION
+          default: '{sde-version}'
+          description: 'SDE type to build stratum bcm'
+
+      - string:
+          name: REGISTRY_URL
+          default: 'registry.aetherproject.org/tost'
+          description: 'Private registry URL'
 
       - string:
           name: REGISTRY_CREDENTIAL
-          default: '{onf-registry-credential}'
+          default: '{aether-registry-credential}'
           description: 'Credentials name for docker registry'
 
       - string:
-          name: DOCKER_IMAGE
-          default: 'stratum-bcm'
+          name: STRATUM_TARGET
+          default: 'bfrt'
+          description: 'Stratum barefoot target (bf or bfrt)'
 
       - string:
           name: DOCKER_IMAGE_TAG
-          default: 'sdklt'
-
-      - string:
-          name: DEBIAN_PACKAGE_PATH
           default: ''
-
-      - string:
-          name: DEBIAN_PACKAGE_NAME
-          default: ''
+          description: 'Docker tag to be used to push the image'
 
       - string:
           name: AWS_S3_CREDENTIAL
           default: '{aws-s3-credential}'
           description: 'Credentials name for AWS S3 bucket'
 
+    triggers:
+      - timed: 'H 0 * * 5'
     project-type: pipeline
     concurrent: true
     extraEnvironmentVars: ""
     sandbox: true
 
-    dsl: !include-raw-escape: ../pipeline/stratum-bcm-test-master.groovy
+    dsl: !include-raw-escape: ../pipeline/aether-stratum-bfrt-build.groovy

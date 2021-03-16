@@ -3,13 +3,13 @@
 # SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
 
 ---
-# Job to trigger stratum bcm build, test and publish
+# Job to build stratum barefoot docker image
 
 - job-template:
-    id: stratum-bcm
-    name: '{id}'
+    id: aether-stratum-bfrt-build-nightly
+    name: 'aether-stratum-bfrt-build-nightly'
     description: |
-      Created by {id} job-template from ci-management/jjb/stratum-bcm.yaml, script ../pipeline/stratum-bcm.groovy
+      Created by {id} job-template from ci-management/jjb/aether-stratum-bfrt-build-nightly.yaml, script ../pipeline/aether-stratum-bfrt-build.groovy
     properties:
       - onf-infra-properties:
           build-days-to-keep: '15'
@@ -24,14 +24,34 @@
           description: 'Name of the Jenkins build executor to run the job on'
 
       - string:
+          name: KERNEL_VERSION
+          default: '4.14.49'
+          description: 'Kernel version to build stratum bfrt'
+
+      - string:
+          name: SDE_VERSION
+          default: '{sde-version}'
+          description: 'SDE type to build stratum bcm'
+
+      - string:
           name: REGISTRY_URL
-          default: 'registry.opennetworking.org/stratum-ccp'
+          default: 'registry.aetherproject.org/tost'
           description: 'Private registry URL'
 
       - string:
           name: REGISTRY_CREDENTIAL
-          default: '{onf-registry-credential}'
+          default: '{aether-registry-credential}'
           description: 'Credentials name for docker registry'
+
+      - string:
+          name: STRATUM_TARGET
+          default: 'bfrt'
+          description: 'Stratum barefoot target (bf or bfrt)'
+
+      - string:
+          name: DOCKER_IMAGE_TAG
+          default: 'latest-{sde-version}'
+          description: 'Docker tag to be used to push the image'
 
       - string:
           name: AWS_S3_CREDENTIAL
@@ -40,10 +60,9 @@
 
     triggers:
       - timed: '{once-a-day}'
-
     project-type: pipeline
     concurrent: true
     extraEnvironmentVars: ""
     sandbox: true
 
-    dsl: !include-raw-escape: ../pipeline/stratum-bcm.groovy
+    dsl: !include-raw-escape: ../pipeline/aether-stratum-bfrt-build.groovy

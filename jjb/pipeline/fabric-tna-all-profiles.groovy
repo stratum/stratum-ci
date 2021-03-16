@@ -25,9 +25,6 @@ pipeline {
                                 string(name: 'REGISTRY_URL', value: "${REGISTRY_URL}"),
                                 string(name: 'DOCKER_IMAGE', value: "${DOCKER_IMAGE}"),
                                 string(name: 'DOCKER_IMAGE_TAG', value: "${DOCKER_IMAGE_TAG}"),
-                                string(name: 'SDE_DOCKER_IMAGE', value: "${SDE_DOCKER_IMAGE}"),
-                                string(name: 'SDE_DOCKER_IMAGE_TAG', value: "${SDE_DOCKER_IMAGE_TAG}"),
-                                string(name: 'SDE_VERSION', value: "${SDE_VERSION}"),
                                 string(name: 'PROFILE', value: "${PROFILE}"),
                                 string(name: 'CPU_PORT', value: "${CPU_PORT}"),
                             ]

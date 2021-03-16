@@ -35,18 +35,18 @@
 
       - string:
           name: REGISTRY_URL
-          default: 'registry.aetherproject.org/stratum-ccp'
+          default: 'registry.opennetworking.org/stratum-ccp'
           description: 'Private registry URL'
+
+      - string:
+          name: REGISTRY_CREDENTIAL
+          default: '{onf-registry-credential}'
+          description: 'Credentials name for docker registry'
 
       - string:
           name: STRATUM_TARGET
           default: '{target}'
           description: 'Stratum barefoot target (bf or bfrt)'
-
-      - string:
-          name: BAZEL_CACHE_OUTPUT
-          default: '/home/sdn/.cache/bazel/_bazel_root/cache'
-          description: 'Bazel cache output for faster building of stratum unit test'
 
       - string:
           name: AWS_S3_CREDENTIAL

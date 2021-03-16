@@ -31,24 +31,17 @@
            description: 'Private registry URL'
 
       - string:
+          name: REGISTRY_CREDENTIAL
+          default: '{onf-registry-credential}'
+          description: 'Credentials name for docker registry'
+
+      - string:
           name: DOCKER_IMAGE
           default: 'stratum-bfrt'
 
       - string:
           name: DOCKER_IMAGE_TAG
-          default: 'latest-9.2.0'
-
-      - string:
-          name: SDE_DOCKER_IMAGE
-          default: 'opennetworking/bf-sde'
-
-      - string:
-          name: SDE_DOCKER_IMAGE_TAG
-          default: '9.2.0-p4c'
-
-      - string:
-          name: SDE_VERSION
-          default: '9.2.0'
+          default: 'latest-9.3.1'
 
       - string:
           name: CPU_PORT
