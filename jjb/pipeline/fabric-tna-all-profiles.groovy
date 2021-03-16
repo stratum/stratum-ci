@@ -11,7 +11,7 @@ pipeline {
                 axes {
                     axis {
                         name 'PROFILE'
-                        values 'fabric', 'fabric-spgw'
+                        values 'fabric', 'fabric-spgw', 'fabric-int', 'fabric-spgw-int'
                     }
                 }
                 agent {

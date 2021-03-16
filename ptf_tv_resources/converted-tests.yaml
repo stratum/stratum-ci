@@ -64,9 +64,6 @@ fabric-int:
   - FabricShortIpPacketInTest
   - FabricTaggedPacketInTest
   - FabricDefaultVlanPacketInTest
-  - FabricFlowReportFilterNoChangeTest
-  - FabricFlowReportFilterChangeTest
-  - FabricIntTest
 
 fabric-spgw-int:
   - FabricBridgingTest
@@ -88,11 +85,6 @@ fabric-spgw-int:
   - FabricShortIpPacketInTest
   - FabricTaggedPacketInTest
   - FabricDefaultVlanPacketInTest
-  - FabricFlowReportFilterNoChangeTest
-  - FabricFlowReportFilterChangeTest
-  - FabricIntTest
-  - FabricSpgwUplinkIntTest
-  - FabricSpgwDownlinkIntTest
   - FabricSpgwDownlinkToDbufTest
   - FabricSpgwDownlinkTest
   - FabricSpgwUplinkTest
