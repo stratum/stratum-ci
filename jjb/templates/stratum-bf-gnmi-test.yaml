@@ -3,13 +3,13 @@
 # SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
 
 ---
-# Job to run TestVectors on given switch
+# Job to run gNMI TestVectors on given switch
 
 - job-template:
-    id: stratum-bf-test
-    name: 'stratum-{target}-test'
+    id: stratum-bf-gnmi-test
+    name: 'stratum-{target}-gnmi-test'
     description: |
-      Created by {id} job-template from ci-management/jjb/stratum-bf-test.yaml, script ../pipeline/stratum-bf-test-master.groovy
+      Created by {id} job-template from ci-management/jjb/stratum-bf-gnmi-test.yaml, script ../pipeline/stratum-bf-gnmi-test.groovy
     properties:
       - onf-infra-properties:
           build-days-to-keep: '15'
@@ -28,24 +28,6 @@
           default: 'x86-64-inventec-d5254-r0'
 
       - string:
-           name: REGISTRY_URL
-           default: 'registry.opennetworking.org/stratum-ccp'
-           description: 'Private registry URL'
-
-      - string:
-          name: REGISTRY_CREDENTIAL
-          default: '{onf-registry-credential}'
-          description: 'Credentials name for docker registry'
-
-      - string:
-          name: DOCKER_IMAGE
-          default: 'stratum-{target}'
-
-      - string:
-          name: DOCKER_IMAGE_TAG
-          default: '9.4.0'
-
-      - string:
           name: TARGET
           default: '{target}'
 
@@ -54,4 +36,4 @@
     extraEnvironmentVars: ""
     sandbox: true
 
-    dsl: !include-raw-escape: ../pipeline/stratum-bf-test-master.groovy
+    dsl: !include-raw-escape: ../pipeline/stratum-bf-gnmi-test.groovy
