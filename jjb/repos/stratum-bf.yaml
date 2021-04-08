@@ -8,27 +8,39 @@
     
     jobs:
         - 'stratum-bf':
-            build-timeout: 30
+            build-timeout: 120
             target: 'bf'
         - 'stratum-bf-build':
-            build-timeout: 30
+            build-timeout: 120
             target: 'bf'
         - 'stratum-bf-test-combined':
-            build-timeout: 30
+            build-timeout: 120
             target: 'bf'
         - 'stratum-bf-test':
-            build-timeout: 30
+            build-timeout: 120
+            target: 'bf'
+        - 'stratum-bf-gnmi-test':
+            build-timeout: 120
+            target: 'bf'
+        - 'stratum-bf-p4rt-test':
+            build-timeout: 120
             target: 'bf'
         - 'stratum-bf':
-            build-timeout: 30
+            build-timeout: 120
             target: 'bfrt'
         - 'stratum-bf-build':
-            build-timeout: 30
+            build-timeout: 120
             target: 'bfrt'
         - 'stratum-bf-test-combined':
-            build-timeout: 30
+            build-timeout: 120
             target: 'bfrt'
         - 'stratum-bf-test':
-            build-timeout: 30
+            build-timeout: 120
+            target: 'bfrt'
+        - 'stratum-bf-gnmi-test':
+            build-timeout: 120
+            target: 'bfrt'
+        - 'stratum-bf-p4rt-test':
+            build-timeout: 120
             target: 'bfrt'
             

@@ -3,14 +3,15 @@
 # SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
 
 ---
-# Job to run TestVectors on given switch
+# Job to run p4rt TestVectors on given switch
 
 - job-template:
-    id: stratum-bf-test
-    name: 'stratum-{target}-test'
+    id: stratum-bf-p4rt-test
+    name: 'stratum-{target}-p4rt-test'
     description: |
-      Created by {id} job-template from ci-management/jjb/stratum-bf-test.yaml, script ../pipeline/stratum-bf-test-master.groovy
+      Created by {id} job-template from ci-management/jjb/stratum-bf-p4rt-test.yaml, script ../pipeline/stratum-bf-p4rt-test.groovy
     properties:
+      - onf-infra-onfstaff-private:
       - onf-infra-properties:
           build-days-to-keep: '15'
           artifact-num-to-keep: '15'
@@ -28,30 +29,24 @@
           default: 'x86-64-inventec-d5254-r0'
 
       - string:
-           name: REGISTRY_URL
-           default: 'registry.opennetworking.org/stratum-ccp'
-           description: 'Private registry URL'
+          name: TARGET
+          default: '{target}'
 
       - string:
-          name: REGISTRY_CREDENTIAL
-          default: '{onf-registry-credential}'
-          description: 'Credentials name for docker registry'
-
-      - string:
-          name: DOCKER_IMAGE
-          default: 'stratum-{target}'
-
-      - string:
-          name: DOCKER_IMAGE_TAG
+          name: SDE_VERSION
           default: '9.4.0'
 
       - string:
-          name: TARGET
-          default: '{target}'
+          name: PROFILE
+          default: 'fabric'
+
+      - string:
+          name: CPU_PORT
+          default: '192'
 
     project-type: pipeline
     concurrent: true
     extraEnvironmentVars: ""
     sandbox: true
 
-    dsl: !include-raw-escape: ../pipeline/stratum-bf-test-master.groovy
+    dsl: !include-raw-escape: ../pipeline/stratum-bf-p4rt-test.groovy
