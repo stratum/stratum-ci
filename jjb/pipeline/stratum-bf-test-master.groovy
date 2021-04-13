@@ -43,12 +43,14 @@ pipeline {
         		    		}
                             stage("Start Stratum on ${SWITCH_NAME}") {
                                 sh returnStdout: false, label: "Copy Config Files", script: """
-                                    ssh-keyscan ${SWITCH_IP} >> ~/.ssh/known_hosts
-                                    sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "mkdir -p $CONFIG_DIR"
+                                    ssh-keyscan ${SWITCH_IP} >> ~/.ssh/known_hosts                                    
+                                    sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "rm -rf ${CONFIG_DIR} || true"
+                                    sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "mkdir -p ${CONFIG_DIR}"
                                     sshpass -p $SWITCH_CREDS_PSW scp -r ${stratum_configs_dir}/${SWITCH_NAME} $SWITCH_CREDS_USR@$SWITCH_IP:${CONFIG_DIR}/${SWITCH_NAME}
                                 """
                                 sh returnStdout: false, label: "Copy Stratum Scripts", script: """
-                                    sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "mkdir -p $CONFIG_DIR"
+                                    sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "rm -rf ${RESOURCE_DIR} || true" 
+                                    sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "mkdir -p ${RESOURCE_DIR}"
                                     sshpass -p $SWITCH_CREDS_PSW scp -r ${stratum_resources_dir} $SWITCH_CREDS_USR@$SWITCH_IP:${RESOURCE_DIR}
                                 """
                                 sh returnStdout: false, label: "Starting Stratum with image ${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG}", script: """
@@ -86,6 +88,8 @@ pipeline {
                             stage("Cleanup") {
                                 sh returnStdout: false, label: "Clean up" , script: """
                                     sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "${RESOURCE_DIR}/stop-stratum.sh"                                    
+                                    sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "rm -rf ${CONFIG_DIR} || true"
+                                    sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "rm -rf ${RESOURCE_DIR} || true"                                   
                                 """
                             }
                         }
