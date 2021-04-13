@@ -51,7 +51,7 @@ pipeline {
                                 sh returnStdout: false, label: "Copy Stratum Scripts", script: """
                                     sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "rm -rf ${RESOURCE_DIR} || true" 
                                     sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "mkdir -p ${RESOURCE_DIR}"
-                                    sshpass -p $SWITCH_CREDS_PSW scp -r ${stratum_resources_dir} $SWITCH_CREDS_USR@$SWITCH_IP:${RESOURCE_DIR}
+                                    sshpass -p $SWITCH_CREDS_PSW scp -r ${stratum_resources_dir}/* $SWITCH_CREDS_USR@$SWITCH_IP:${RESOURCE_DIR}
                                 """
                                 sh returnStdout: false, label: "Starting Stratum with image ${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG}", script: """
                                     sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "tmux kill-session -t CI || true"
