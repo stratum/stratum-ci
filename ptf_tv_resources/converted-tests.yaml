@@ -18,6 +18,12 @@ fabric:
   - FabricShortIpPacketInTest
   - FabricTaggedPacketInTest
   - FabricDefaultVlanPacketInTest
+  - FabricBridgingPriorityTest
+  - FabricIPv4DoNotOverrideInfraTest
+  - FabricIPv4MplsDoNotOverrideTest
+  - FabricIPv4MplsOverrideEdgeTest
+  - FabricIPv4UnicastAclOuterDropTest
+  - FabricIPv4UnicastGtpAclInnerDropTest
 
 fabric-spgw:
   - FabricBridgingTest
@@ -39,6 +45,12 @@ fabric-spgw:
   - FabricShortIpPacketInTest
   - FabricTaggedPacketInTest
   - FabricDefaultVlanPacketInTest
+  - FabricBridgingPriorityTest
+  - FabricIPv4DoNotOverrideInfraTest
+  - FabricIPv4MplsDoNotOverrideTest
+  - FabricIPv4MplsOverrideEdgeTest
+  - FabricIPv4UnicastAclOuterDropTest
+  - FabricIPv4UnicastGtpAclInnerDropTest
   - FabricSpgwDownlinkToDbufTest
   - FabricSpgwDownlinkTest
   - FabricSpgwUplinkTest
@@ -64,6 +76,12 @@ fabric-int:
   - FabricShortIpPacketInTest
   - FabricTaggedPacketInTest
   - FabricDefaultVlanPacketInTest
+  - FabricBridgingPriorityTest
+  - FabricIPv4DoNotOverrideInfraTest
+  - FabricIPv4MplsDoNotOverrideTest
+  - FabricIPv4MplsOverrideEdgeTest
+  - FabricIPv4UnicastAclOuterDropTest
+  - FabricIPv4UnicastGtpAclInnerDropTest
 
 fabric-spgw-int:
   - FabricBridgingTest
@@ -85,6 +103,12 @@ fabric-spgw-int:
   - FabricShortIpPacketInTest
   - FabricTaggedPacketInTest
   - FabricDefaultVlanPacketInTest
+  - FabricBridgingPriorityTest
+  - FabricIPv4DoNotOverrideInfraTest
+  - FabricIPv4MplsDoNotOverrideTest
+  - FabricIPv4MplsOverrideEdgeTest
+  - FabricIPv4UnicastAclOuterDropTest
+  - FabricIPv4UnicastGtpAclInnerDropTest
   - FabricSpgwDownlinkToDbufTest
   - FabricSpgwDownlinkTest
   - FabricSpgwUplinkTest
