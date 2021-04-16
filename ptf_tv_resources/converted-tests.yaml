@@ -18,6 +18,13 @@ fabric:
   - FabricShortIpPacketInTest
   - FabricTaggedPacketInTest
   - FabricDefaultVlanPacketInTest
+  - FabricBridgingPriorityTest
+  - FabricIPv4DoNotOverrideInfraTest
+  - FabricIPv4MplsDoNotOverrideTest
+  - FabricIPv4MplsOverrideEdgeTest
+  - FabricIPv4UnicastAclOuterDropTest
+  - FabricIPv4UnicastGtpAclInnerDropTest
+  - FabricOptimizedFieldDetectorTest
 
 fabric-spgw:
   - FabricBridgingTest
