@@ -13,7 +13,7 @@ pipeline {
                 SWITCH_CREDS = credentials("${SWITCH_NAME}-credentials")
                 DOCKER_CREDS = credentials("abhilash_docker_access")
                 SWITCH_IP = '' 
-		        SWITCH_PORT = 28000
+		        SWITCH_PORT = 9339
                 CONFIG_DIR = '/tmp/stratum_configs'
                 RESOURCE_DIR = '/tmp/barefoot'
                 TV_RUNNER_IMAGE = 'stratumproject/tvrunner:fabric-tna-binary'
