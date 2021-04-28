@@ -39,7 +39,6 @@ docker run -it --rm --privileged \
     -v /lib/modules/$(uname -r):/lib/modules/$(uname -r) \
     --env PLATFORM=$PLATFORM \
     $ONLP_MOUNT \
-    -p 28000:28000 \
     -p 9339:9339 \
     $FLAG_FILE_MOUNT \
     $CHASSIS_CONFIG_MOUNT \
