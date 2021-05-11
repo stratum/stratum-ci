@@ -7,7 +7,6 @@ fabric:
   - FabricIPv4MulticastTest
   - FabricIPv4UnicastTest
   - FabricIPv4UnicastDefaultRouteTest
-  - FabricIPv4UnicastGtpPassthroughTest
   - FabricIPv4MplsGroupTest
   - FabricMplsSegmentRoutingTest
   - FabricArpPacketOutTest
@@ -34,7 +33,6 @@ fabric-spgw:
   - FabricIPv4MulticastTest
   - FabricIPv4UnicastTest
   - FabricIPv4UnicastDefaultRouteTest
-  - FabricIPv4UnicastGtpPassthroughTest
   - FabricIPv4MplsGroupTest
   - FabricMplsSegmentRoutingTest
   - FabricArpPacketOutTest
@@ -65,7 +63,6 @@ fabric-int:
   - FabricIPv4MulticastTest
   - FabricIPv4UnicastTest
   - FabricIPv4UnicastDefaultRouteTest
-  - FabricIPv4UnicastGtpPassthroughTest
   - FabricIPv4MplsGroupTest
   - FabricMplsSegmentRoutingTest
   - FabricArpPacketOutTest
@@ -92,7 +89,6 @@ fabric-spgw-int:
   - FabricIPv4MulticastTest
   - FabricIPv4UnicastTest
   - FabricIPv4UnicastDefaultRouteTest
-  - FabricIPv4UnicastGtpPassthroughTest
   - FabricIPv4MplsGroupTest
   - FabricMplsSegmentRoutingTest
   - FabricArpPacketOutTest
