@@ -259,5 +259,5 @@
                   value: $.pull_request.merge_commit_sha
             regex-filter-text: $action,$merged
             regex-filter-expression: ^(closed,true)$
-            cause: Generic Cause
+            cause: 'Github PR merged on branch $branchName with commit SHA: $commitHash'
             token: '{project}'
