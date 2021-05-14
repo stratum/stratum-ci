@@ -22,7 +22,6 @@ pipeline {
                 checkout([
                     $class: 'GitSCM',
                     userRemoteConfigs: [[ url: "https://github.com/stratum/stratum-helm-charts" ]],
-                    extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: "stratum-helm-charts"]],
                     ],
                 )
             }
