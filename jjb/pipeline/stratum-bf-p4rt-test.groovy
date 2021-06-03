@@ -5,7 +5,7 @@ pipeline {
         label "${BUILD_NODE}"
     }
     options {
-        timeout(time: 60, unit: 'MINUTES')
+        timeout(time: 120, unit: 'MINUTES')
     }
     stages {
         stage("Start Testing") {

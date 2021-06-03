@@ -7,7 +7,7 @@
 
 - job-template:
     id: stratum-bf
-    name: 'stratum-{target}'
+    name: 'stratum-{target}-{sde-version}'
     description: |
       Created by {id} job-template from ci-management/jjb/stratum-bf.yaml, script ../pipeline/stratum-bf.groovy
     properties:
@@ -37,6 +37,16 @@
           name: TARGET
           default: '{target}'
           description: 'Stratum barefoot target (bf or bfrt)'
+
+      - string:
+          name: SDE_VERSION
+          default: '{sde-version}'
+          description: 'SDE Version to build'
+
+      - string:
+          name: KERNEL_VERSION
+          default: '4.14.49'
+          description: 'Kernel Version'      
 
     triggers:
       - timed: '{once-a-day}'
