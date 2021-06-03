@@ -56,12 +56,13 @@
     every-six-hours: "H */6 * * *"
     every-eight-hours: "H */8 * * *"
     twice-a-day: "H */12 * * *"
-    once-a-day: "H 0 * * *"
+    once-a-day: "H H * * *"
 
     # The most frequently used type of Build Executor. Name is per the LF global-jjb.
     # See build node types under "Cloud > Amazon EC2" at
     #  https://jenkins.opencord.org/configure
-    build-node: ubuntu16.04-basebuild-2c-4g
+    build-node: ubuntu16.04-basebuild-2c-8g
+    bigger-build-node: ubuntu16.04-basebuild-8c-15g
 
     # CORD Gerrit server definition, set in configuration
     gerrit-server-name: 'CORD Gerrit'
