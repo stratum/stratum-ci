@@ -11,7 +11,7 @@ pipeline {
         stage("Start Testing") {
             environment {
                 SWITCH_CREDS = credentials("${SWITCH_NAME}-credentials")
-                DOCKER_CREDS = credentials("abhilash_docker_access")
+                REGISTRY_CREDS = credentials("${REGISTRY_CREDENTIAL}")
                 SWITCH_IP = '' 
 		        SWITCH_PORT = 9339
                 CONFIG_DIR = '/tmp/stratum_configs'
@@ -35,7 +35,7 @@ pipeline {
 							step([$class: 'WsCleanup'])
 							git branch: 'main', credentialsId: 'abhilash_github', url: 'https://github.com/stratum/fabric-tna.git'
 							sh returnStdout: false, label: "Build fabric-tna", script: """
-								docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}
+							    docker login ${REGISTRY_URL} -u ${REGISTRY_CREDS_USR} -p ${REGISTRY_CREDS_PSW}
 								make ${PROFILE}
 							"""
 						}
