@@ -5,13 +5,13 @@ pipeline {
         label "${BUILD_NODE}"
     }
     options {
-        timeout(time: 60, unit: 'MINUTES')
+        timeout(time: 120, unit: 'MINUTES')
     }
     stages {
         stage("Start Testing") {
             environment {
                 SWITCH_CREDS = credentials("${SWITCH_NAME}-credentials")
-                DOCKER_CREDS = credentials("abhilash_docker_access")
+                REGISTRY_CREDS = credentials("${REGISTRY_CREDENTIAL}")
                 SWITCH_IP = '' 
 		        SWITCH_PORT = 9339
                 CONFIG_DIR = '/tmp/stratum_configs'
@@ -35,7 +35,7 @@ pipeline {
 							step([$class: 'WsCleanup'])
 							git branch: 'main', credentialsId: 'abhilash_github', url: 'https://github.com/stratum/fabric-tna.git'
 							sh returnStdout: false, label: "Build fabric-tna", script: """
-								docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}
+							    docker login ${REGISTRY_URL} -u ${REGISTRY_CREDS_USR} -p ${REGISTRY_CREDS_PSW}
 								make ${PROFILE}
 							"""
 						}
@@ -85,9 +85,9 @@ pipeline {
 									IMAGE_NAME=${TV_RUNNER_IMAGE} ./tvrunner.sh --target ${tv_dir}/target.pb.txt --portmap ${tv_dir}/portmap.pb.txt --template-config ${ptf_configs_dir}/${SWITCH_NAME}/tv-template.json --dp-mode loopback --tv-dir ${ptf_tv_resources_dir} --tv-name Set_Loopback_Mode
 								"""
 								sh returnStdout: false, label:"Run ${test_name}", script: """
-									IMAGE_NAME=${TV_RUNNER_IMAGE} ${WORKSPACE}/testvectors-runner/tvrunner.sh --dp-mode loopback --match-type in --target ${tv_dir}/target.pb.txt --portmap ${tv_dir}/portmap.pb.txt --tv-dir ${tv_dir}/${test_name}/setup
+									IMAGE_NAME=${TV_RUNNER_IMAGE} ${WORKSPACE}/testvectors-runner/tvrunner.sh --dp-mode loopback --match-type in --target ${tv_dir}/target.pb.txt --portmap ${tv_dir}/portmap.pb.txt --tv-dir ${tv_dir}/${test_name}/setup --tv-name setup_switch_info
 									IMAGE_NAME=${TV_RUNNER_IMAGE} ${WORKSPACE}/testvectors-runner/tvrunner.sh --dp-mode loopback --match-type in --target ${tv_dir}/target.pb.txt --portmap ${tv_dir}/portmap.pb.txt --tv-dir ${tv_dir}/${test_name} --tv-name ${test_name}.* --result-dir ${WORKSPACE}/testvectors-runner/results --result-file ${test_name}
-									IMAGE_NAME=${TV_RUNNER_IMAGE} ${WORKSPACE}/testvectors-runner/tvrunner.sh --dp-mode loopback --match-type in --target ${tv_dir}/target.pb.txt --portmap ${tv_dir}/portmap.pb.txt --tv-dir ${tv_dir}/${test_name}/teardown
+									IMAGE_NAME=${TV_RUNNER_IMAGE} ${WORKSPACE}/testvectors-runner/tvrunner.sh --dp-mode loopback --match-type in --target ${tv_dir}/target.pb.txt --portmap ${tv_dir}/portmap.pb.txt --tv-dir ${tv_dir}/${test_name}/teardown --tv-name reset_switch_info
 								"""
 								}
 							}

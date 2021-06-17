@@ -6,7 +6,7 @@ pipeline {
         label "${BUILD_NODE}"
     }
     options {
-        timeout(time: 60, unit: 'MINUTES')
+        timeout(time: 180, unit: 'MINUTES')
     }
     stages {
         stage('Preparations') {
@@ -33,16 +33,20 @@ pipeline {
                     for (name in test_config.switches.keySet()) {
                         def switch_name = name
                         if (test_config.switches[switch_name].platform == 'bf' && (LRM.get().fromName(switch_name) == null || !LRM.get().fromName(switch_name).isReserved())) {
-                            tests[switch_name] = {
-                                node {
-                                    stage(switch_name) {sh returnStdout: false, label: "Start testing on "+switch_name+" with image ${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG}", script: ""
-                                        build job: "stratum-${TARGET}-test", parameters: [
-                                            string(name: 'SWITCH_NAME', value: switch_name),
-                                            string(name: 'REGISTRY_URL', value: "${REGISTRY_URL}"),
-                                            string(name: 'REGISTRY_CREDENTIAL', value: "${REGISTRY_CREDENTIAL}"),
-                                            string(name: 'DOCKER_IMAGE', value: "${DOCKER_IMAGE}"),
-                                            string(name: 'DOCKER_IMAGE_TAG', value: "${DOCKER_IMAGE_TAG}"),
-                                        ]
+                            for (String sdk : test_config.switches[switch_name].supported_sdks) {
+                                if(sdk == DOCKER_IMAGE_TAG) {
+                                    tests[switch_name] = {
+                                        node {
+                                            stage(switch_name) {sh returnStdout: false, label: "Start testing on "+switch_name+" with image ${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG}", script: ""
+                                                build job: "stratum-${TARGET}-test", parameters: [
+                                                    string(name: 'SWITCH_NAME', value: switch_name),
+                                                    string(name: 'REGISTRY_URL', value: "${REGISTRY_URL}"),
+                                                    string(name: 'REGISTRY_CREDENTIAL', value: "${REGISTRY_CREDENTIAL}"),
+                                                    string(name: 'DOCKER_IMAGE', value: "${DOCKER_IMAGE}"),
+                                                    string(name: 'DOCKER_IMAGE_TAG', value: "${DOCKER_IMAGE_TAG}"),
+                                                ]
+                                            }
+                                        }
                                     }
                                 }
                             }

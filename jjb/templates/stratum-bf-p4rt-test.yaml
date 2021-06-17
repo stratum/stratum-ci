@@ -25,6 +25,16 @@
           description: 'Name of the Jenkins build executor to run the job on'
 
       - string:
+          name: REGISTRY_CREDENTIAL
+          default: '{onf-registry-credential}'
+          description: 'Credentials name for docker registry'
+
+      - string: 
+          name: REGISTRY_URL
+          default: 'registry.opennetworking.org/bf-sde'
+          description: 'bf-sde registry URL'
+
+      - string:
           name: SWITCH_NAME
           default: 'x86-64-inventec-d5254-r0'
 

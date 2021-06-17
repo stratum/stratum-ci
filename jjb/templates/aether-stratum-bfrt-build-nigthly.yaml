@@ -20,7 +20,7 @@
     parameters:
       - string:
           name: BUILD_NODE
-          default: '{build-node}'
+          default: '{bigger-build-node}'
           description: 'Name of the Jenkins build executor to run the job on'
 
       - string:
