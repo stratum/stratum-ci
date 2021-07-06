@@ -13,7 +13,7 @@ pipeline {
                 SWITCH_CREDS = credentials("${SWITCH_NAME}-credentials")
                 DOCKER_CREDS = credentials("abhilash_docker_access")
                 REGISTRY_CREDS = credentials("${REGISTRY_CREDENTIAL}")
-                SWITCH_IP = '' 
+                SWITCH_IP = ''
 		        SWITCH_PORT = 9339
                 CONFIG_DIR = '/tmp/stratum_configs'
                 RESOURCE_DIR = '/tmp/barefoot'
@@ -44,12 +44,12 @@ pipeline {
                                 script {
                                     try {
                                         sh returnStdout: false, label: "Get Stratum CI repo" , script: """
-                                            git clone https://github.com/stratum/stratum-ci.git 
+                                            git clone https://github.com/stratum/stratum-ci.git
                                         """
                                         test_config = readYaml file: "${WORKSPACE}/stratum-ci/resources/test-config.yaml"
                                         converted_tests = readYaml file: "${WORKSPACE}/stratum-ci/ptf_tv_resources/converted-tests.yaml"
                                         test_list = converted_tests."${PROFILE}"
-                                        tv_dir = "${WORKSPACE}/ptf/tests/ptf/testvectors"
+                                        tv_dir = "${WORKSPACE}/ptf/tests/common/testvectors"
                                         SWITCH_IP = """${test_config.switches["${SWITCH_NAME}"].ip}"""
                                         stratum_configs_dir = "${WORKSPACE}/stratum-ci/stratum_configs"
                                         stratum_resources_dir = "${WORKSPACE}/stratum-ci/resources/barefoot"
@@ -63,7 +63,7 @@ pipeline {
                             }
                             stage("Generate TestVectors for ${PROFILE} profile") {
                                 sh returnStdout: false, label: "Generate TestVectors from fabric-tna ptf Tests", script: """
-                                    cp ${ptf_configs_dir}/${SWITCH_NAME}/port_map.json ${WORKSPACE}/ptf/tests/ptf
+                                    cp ${ptf_configs_dir}/${SWITCH_NAME}/port_map.json ${WORKSPACE}/ptf/tests/common
                                     cd ${WORKSPACE}/ptf
                                     run/tv/run ${PROFILE} PORTMAP=port_map.json GRPCADDR=${SWITCH_IP}:${SWITCH_PORT} CPUPORT=${CPU_PORT}
                                 """
@@ -127,7 +127,7 @@ pipeline {
                                                 cd ${WORKSPACE}/testvectors-runner/results
                                                 ls fabric_tna_hw_results*.csv
                                             """
-          
+
                                             csv_list = csv_list.trim()
                                             for( String csv_name : csv_list.split() ) {
                                                 sh label: "Dummy", script: """
@@ -142,9 +142,9 @@ pipeline {
                             stage("Cleanup") {
                                 sh returnStdout: false, label: "Clean up" , script: """
                                     cd testvectors-runner
-                                    sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "${RESOURCE_DIR}/stop-stratum.sh"                                    
+                                    sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "${RESOURCE_DIR}/stop-stratum.sh"
                                     sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "rm -rf ${CONFIG_DIR} || true"
-                                    sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "rm -rf ${RESOURCE_DIR} || true"                                    
+                                    sshpass -p $SWITCH_CREDS_PSW ssh $SWITCH_CREDS_USR@$SWITCH_IP "rm -rf ${RESOURCE_DIR} || true"
                                 """
                             }
                         }
