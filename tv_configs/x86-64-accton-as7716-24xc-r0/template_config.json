@@ -1,11 +1,11 @@
 {
-	"Port1":96, 
-	"Port2":106, 
-	"Port1_Octal":"\"\\000\\140\"",
-	"Port2_Octal":"\"\\000\\152\"",
+	"Port1":76, 
+	"Port2":80, 
+	"Port1_Octal":"\"\\000\\114\"",
+	"Port2_Octal":"\"\\000\\120\"",
 	"CPU_Port_Octal": "\"\\000\\300\"",
-	"Interface1": "5/0",
-	"Interface2": "6/0",
+	"Interface1": "3/0",
+	"Interface2": "4/0",
 	"Interfaces": [
 		{
 			"name": "1/0",
