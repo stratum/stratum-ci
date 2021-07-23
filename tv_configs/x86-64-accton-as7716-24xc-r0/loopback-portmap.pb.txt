@@ -4,12 +4,12 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 entries: <
-  port_number: 96
+  port_number: 76
   interface_name: "ens6f0"
   port_type: 1
 >
 entries: <
-  port_number: 106
+  port_number: 80
   interface_name: "ens6f1"
   port_type: 2
 >
