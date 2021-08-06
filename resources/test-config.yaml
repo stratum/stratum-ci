@@ -35,3 +35,7 @@ switches:
     platform: 'bcm'
     supported_sdks: ['opennsa']
     ip: '10.128.13.203'
+  x86-64-accton-as7716-24xc-r0:
+    platform: 'bcm'
+    supported_sdks: ['opennsa']
+    ip: '10.128.13.125'  
