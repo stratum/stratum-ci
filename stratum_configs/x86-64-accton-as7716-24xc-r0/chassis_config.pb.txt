@@ -40,6 +40,9 @@ singleton_ports {
   slot: 1
   port: 3
   speed_bps: 100000000000
+  config_params {
+    admin_state: ADMIN_STATE_ENABLED
+  }
   node: 1
 }
 singleton_ports {
@@ -48,6 +51,9 @@ singleton_ports {
   slot: 1
   port: 4
   speed_bps: 100000000000
+  config_params {
+    admin_state: ADMIN_STATE_ENABLED
+  }
   node: 1
 }
 singleton_ports {
