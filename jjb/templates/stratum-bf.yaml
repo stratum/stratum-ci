@@ -39,11 +39,6 @@
           description: 'SDE Version to build'
 
       - string:
-          name: KERNEL_VERSION
-          default: '4.14.49'
-          description: 'Kernel Version'      
-
-      - string:
           name: AWS_S3_CREDENTIAL
           default: '{aws-s3-credential}'
           description: 'Credentials name for AWS S3 bucket'    
