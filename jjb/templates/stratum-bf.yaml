@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
 
 ---
-# Job to trigger stratum bf build, test and publish
+# Job to trigger stratum barefoot target build and publish
 
 - job-template:
     id: stratum-bf
@@ -24,14 +24,9 @@
           description: 'Name of the Jenkins build executor to run the job on'
 
       - string:
-          name: REGISTRY_URL
-          default: 'registry.opennetworking.org/stratum-ccp'
-          description: 'Private registry URL'
-
-      - string:
-          name: REGISTRY_CREDENTIAL
-          default: '{onf-registry-credential}'
-          description: 'Credentials name for docker registry'
+          name: ONF_DOCKER_HUB_CREDENTIAL
+          default: '{onf-docker-hub-credential}'
+          description: 'Credentials name for docker hub'
 
       - string:
           name: TARGET
@@ -47,6 +42,11 @@
           name: KERNEL_VERSION
           default: '4.14.49'
           description: 'Kernel Version'      
+
+      - string:
+          name: AWS_S3_CREDENTIAL
+          default: '{aws-s3-credential}'
+          description: 'Credentials name for AWS S3 bucket'    
 
     triggers:
       - timed: '{once-a-day}'
