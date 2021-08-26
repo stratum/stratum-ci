@@ -27,6 +27,7 @@
     aws-s3-credential: 'AKIAR6Z4ESHHIXKSMOXU'
     aether-registry-credential: 'aether-registry-credentials'
     onf-registry-credential: 'onf-registry-credentials'
+    onf-docker-hub-credential: 'onf_docker_hub'
 
     # by default, don't depend on other jobs
     dependency-jobs: ''
