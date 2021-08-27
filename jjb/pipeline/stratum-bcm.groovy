@@ -11,8 +11,8 @@ pipeline {
                 step([$class: 'WsCleanup'])
                 sh returnStdout: false, label: "Start building stratum-bcm:${TARGET}", script: """
                     git clone https://github.com/stratum/stratum.git
-                    cd ${WORKSPACE}/stratum/stratum/hal/bin/bcm/standalone/docker
-                    STRATUM_TARGET=stratum_bcm_${TARGET} RELEASE_BUILD=true ./build-stratum-bcm-container.sh 
+                    cd ${WORKSPACE}/stratum
+                    STRATUM_TARGET=stratum_bcm_${TARGET} RELEASE_BUILD=true stratum/hal/bin/bcm/standalone/docker/build-stratum-bcm-container.sh
                 """
             }
         }
