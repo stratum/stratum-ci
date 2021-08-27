@@ -6,8 +6,8 @@
 # Job to trigger stratum bcm build, test and publish
 
 - job-template:
-    id: stratum-bf
-    name: 'stratum-{target}-{sde-version}'
+    id: stratum-bcm
+    name: 'stratum-bcm-{target}'
     description: |
       Created by {id} job-template from ci-management/jjb/stratum-bcm.yaml, script ../pipeline/stratum-bcm.groovy
     properties:
@@ -32,11 +32,6 @@
           name: TARGET
           default: '{target}'
           description: 'Stratum broadcomm target (bcm)'
-
-      - string:
-          name: SDE_VERSION
-          default: '{sde-version}'
-          description: 'SDE Version to build'
 
       - string:
           name: AWS_S3_CREDENTIAL

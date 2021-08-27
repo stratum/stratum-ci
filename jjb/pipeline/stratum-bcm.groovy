@@ -6,40 +6,21 @@ pipeline {
         timeout(time: 60, unit: 'MINUTES')
     }
     stages {
-        stage('Build Debian Package') {
+        stage('Build') {
             steps {
                 step([$class: 'WsCleanup'])
-                sh returnStdout: false, label: "Start building stratum-bcm_${SDE}_deb", script: """
+                sh returnStdout: false, label: "Start building stratum-bcm:${TARGET}", script: """
                     git clone https://github.com/stratum/stratum.git
-                    cd ${WORKSPACE}/stratum
-                    sed -i 's/ -ti/ --tty/g' setup_dev_env.sh
-                    ./setup_dev_env.sh -- --name stratum & 
-                    sleep 120
-                    docker exec -t stratum bazel build //stratum/hal/bin/bcm/standalone:stratum_bcm_${SDE}_deb
-                """
-            }
-        }
-        stage('Save Debian Package') {
-            steps {
-                withAWS(credentials:"${AWS_S3_CREDENTIAL}") {
-                    s3Upload(file:"${WORKSPACE}/stratum/bazel-bin/stratum/hal/bin/bcm/standalone/stratum_bcm_${SDE}_deb.deb", bucket:'stratum-artifacts', path:"stratum_bcm_${SDE}_deb.deb")
-                }
-            }
-        }
-        stage('Build Docker Image') {
-            steps {
-                sh returnStdout: false, label: "Start building stratum-bcm:${SDE}", script: """
-                    cp ${WORKSPACE}/stratum/bazel-bin/stratum/hal/bin/bcm/standalone/stratum_bcm_${SDE}_deb.deb ${WORKSPACE}/stratum/stratum/hal/bin/bcm/standalone/docker/stratum_bcm_deb.deb
                     cd ${WORKSPACE}/stratum/stratum/hal/bin/bcm/standalone/docker
-                    docker build -t stratumproject/stratum-bcm:latest-${SDE} .
+                    STRATUM_TARGET=stratum_bcm_${TARGET} RELEASE_BUILD=true ./build-stratum-bcm-container.sh 
                 """
             }
         }
         stage('Push'){
             steps {
                 withDockerRegistry([ credentialsId: "${ONF_DOCKER_HUB_CREDENTIAL}", url: "" ]) {
-                    sh returnStdout: false, label: "Start publishing stratumproject/stratum-bcm:latest-${SDE}", script: """
-                        docker push stratumproject/stratum-bcm:latest-${SDE}
+                    sh returnStdout: false, label: "Start publishing stratumproject/stratum-bcm-${TARGET}:latest", script: """
+                        docker push stratumproject/stratum-bcm-${TARGET}:latest
 		            """   
                 }
             }
