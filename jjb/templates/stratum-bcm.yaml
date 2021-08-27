@@ -6,8 +6,8 @@
 # Job to trigger stratum bcm build, test and publish
 
 - job-template:
-    id: stratum-bcm
-    name: '{id}'
+    id: stratum-bf
+    name: 'stratum-{target}-{sde-version}'
     description: |
       Created by {id} job-template from ci-management/jjb/stratum-bcm.yaml, script ../pipeline/stratum-bcm.groovy
     properties:
@@ -24,19 +24,24 @@
           description: 'Name of the Jenkins build executor to run the job on'
 
       - string:
-          name: REGISTRY_URL
-          default: 'registry.opennetworking.org/stratum-ccp'
-          description: 'Private registry URL'
+          name: ONF_DOCKER_HUB_CREDENTIAL
+          default: '{onf-docker-hub-credential}'
+          description: 'Credentials name for docker hub'
 
       - string:
-          name: REGISTRY_CREDENTIAL
-          default: '{onf-registry-credential}'
-          description: 'Credentials name for docker registry'
+          name: TARGET
+          default: '{target}'
+          description: 'Stratum broadcomm target (bcm)'
+
+      - string:
+          name: SDE_VERSION
+          default: '{sde-version}'
+          description: 'SDE Version to build'
 
       - string:
           name: AWS_S3_CREDENTIAL
           default: '{aws-s3-credential}'
-          description: 'Credentials name for AWS S3 bucket'
+          description: 'Credentials name for AWS S3 bucket'    
 
     triggers:
       - timed: '{once-a-day}'

@@ -9,8 +9,6 @@
     jobs:
         - 'stratum-bcm':
             build-timeout: 30  
-        - 'stratum-bcm-build':
-            build-timeout: 30
         - 'stratum-bcm-test-combined':
             build-timeout: 30
         - 'stratum-bcm-test':
