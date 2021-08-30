@@ -11,7 +11,7 @@ pipeline {
                 step([$class: 'WsCleanup'])
                 script {
                     if(params.DOCKER_IMAGE_TAG == '') {
-                        DOCKER_IMAGE_TAG=sh(script:'date +%y%m%d', returnStdout:true).trim()+"-"+SDE_VERSION
+                        DOCKER_IMAGE_TAG=sh(script:'date +%y.%m.%d', returnStdout:true).trim()+"-"+SDE_VERSION
                     }
                 }
             }
