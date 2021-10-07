@@ -10,7 +10,7 @@ switches:
   x86-64-inventec-d5254-r0:
     platform: 'bf'
     supported_sdks: [9.4.0, 9.5.0]
-    ip: '10.128.13.111'
+    ip: '10.93.1.53'
   x86-64-quanta-ix1-rangeley-r0:
     platform: 'bcm'
     supported_sdks: ['sdklt']
@@ -22,11 +22,11 @@ switches:
   x86-64-stordis-bf6064x-t-r0:
     platform: 'bf'
     supported_sdks: [9.3.1, 9.3.2, 9.4.0, 9.5.0]
-    ip: '10.128.13.116'
+    ip: '10.93.1.51'
   x86-64-accton-as7712-32x-r0:
     platform: 'bcm'
     supported_sdks: ['sdklt','opennsa']
-    ip: '10.128.13.241'
+    ip: '10.93.1.52'
   x86-64-inventec-d7032q28b-r0:
     platform: 'bcm'
     supported_sdks: ['sdklt']
@@ -34,8 +34,8 @@ switches:
   x86-64-accton-as6712-32x-r0:
     platform: 'bcm'
     supported_sdks: ['opennsa']
-    ip: '10.128.13.203'
+    ip: '10.93.1.50'
   x86-64-accton-as7716-24xc-r0:
     platform: 'bcm'
     supported_sdks: ['opennsa']
-    ip: '10.128.13.125'  
+    ip: '10.93.1.54'  
