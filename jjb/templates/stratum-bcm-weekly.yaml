@@ -1,0 +1,59 @@
+# SPDX-FileCopyrightText: 2020 Open Networking Foundation <info@opennetworking.org>
+#
+# SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
+
+---
+# Job to push stratum broadcom weekly image tag
+
+- job-template:
+    id: stratum-bcm-weekly
+    name: 'stratum-bcm-{target}-weekly'
+    description: |
+      Created by {id} job-template from ci-management/jjb/stratum-bcm-weekly.yaml, script ../pipeline/stratum-bcm-add-tag.groovy
+    properties:
+      - onf-infra-properties:
+          build-days-to-keep: '15'
+          artifact-num-to-keep: '15'
+    wrappers:
+      - onf-infra-rsync-wrappers:
+          build-timeout: '{build-timeout}'
+    parameters:
+      - string:
+          name: BUILD_NODE
+          default: '{build-node}'
+          description: 'Name of the Jenkins build executor to run the job on'
+
+      - string:
+          name: ONF_DOCKER_HUB_CREDENTIAL
+          default: '{onf-docker-hub-credential}'
+          description: 'Credentials name for docker hub'
+
+      - string:
+          name: TARGET
+          default: '{target}'
+          description: 'Stratum broadcom target (opennsa or sdklt)'
+
+      - string:
+          name: DOCKER_IMAGE_TAG
+          default: ''
+          description: 'New tag to add to latest image'
+
+      - string:
+          name: ONF_REGISTRY_CREDENTIAL
+          default: 'onf-registry-credentials'
+          description: 'Credentials name for ONF registry'
+
+      - string:
+          name: ONF_REGISTRY_URL
+          default: 'registry.opennetworking.org'
+          description: 'URL for ONF registry'
+
+    triggers:
+      - timed: 'H 0 * * 5'
+
+    project-type: pipeline
+    concurrent: true
+    extraEnvironmentVars: ""
+    sandbox: true
+
+    dsl: !include-raw-escape: ../pipeline/stratum-bcm-add-tag.groovy

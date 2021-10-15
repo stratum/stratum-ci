@@ -13,6 +13,12 @@
         - 'stratum-bcm':
             build-timeout: 30
             target: 'sdklt'
+        - 'stratum-bcm-weekly':
+            build-timeout: 30 
+            target: 'opennsa'
+        - 'stratum-bcm-weekly':
+            build-timeout: 30 
+            target: 'sdklt'
         - 'stratum-bcm-test-combined':
             build-timeout: 30
         - 'stratum-bcm-test':

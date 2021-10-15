@@ -12,7 +12,7 @@ pipeline {
                 sh returnStdout: false, label: "Start building stratum-bcm:${TARGET}", script: """
                     git clone https://github.com/stratum/stratum.git
                     cd ${WORKSPACE}/stratum
-                    STRATUM_TARGET=stratum_bcm_${TARGET} RELEASE_BUILD=true stratum/hal/bin/bcm/standalone/docker/build-stratum-bcm-container.sh
+                    STRATUM_TARGET=stratum_bcm_${TARGET} RELEASE_BUILD=true stratum/hal/bin/bcm/standalone/docker/build-stratum-bcm-container.sh 
                 """
             }
         }
@@ -20,7 +20,8 @@ pipeline {
             steps {
                 withDockerRegistry([ credentialsId: "${ONF_DOCKER_HUB_CREDENTIAL}", url: "" ]) {
                     sh returnStdout: false, label: "Start publishing stratumproject/stratum-bcm-${TARGET}:latest", script: """
-                        docker push stratumproject/stratum-bcm-${TARGET}:latest
+                        docker tag stratumproject/stratum-bcm_${TARGET}:latest stratumproject/stratum-bcm:latest-${TARGET}
+                        docker push stratumproject/stratum-bcm:latest-${TARGET}
 		            """   
                 }
             }
