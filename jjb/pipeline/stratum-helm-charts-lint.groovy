@@ -66,7 +66,8 @@ pipeline {
         }
         stage ('Lint') {
             steps {
-                sh """#!/bin/bash                                                                                                                                                            set -x
+                sh """#!/bin/bash
+                set -x
                 ./helm-repo-tools/helmlint.sh clean
                 """
             }
