@@ -11,7 +11,7 @@ pipeline {
     }
     environment {
         PATH="$WORKSPACE/linux-amd64:$PATH"
-        GITHUB_ACCESS = credentials('github_access_credential')
+        GITHUB_ACCESS = credentials('stratum_github_access_token')
         PUBLISH_URL ="charts.stratumproject.org/"
         OLD_REPO_DIR ="stratum-helm-repo"
         NEW_REPO_DIR ="chart_repo"
