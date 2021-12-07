@@ -36,17 +36,18 @@ pipeline {
                         if (test_config.switches[switch_name].platform == 'bcm' && (LRM.get().fromName(switch_name) == null || !LRM.get().fromName(switch_name).isReserved())) {
                             for (String sdk : test_config.switches[switch_name].supported_sdks) {
                                 if (sdk == DOCKER_IMAGE_TAG ){
-                                    tests[switch_name+"-debian"] = {
-                                        node("${BUILD_NODE}") {
-                                            stage(switch_name) {sh returnStdout: false, label: "Start testing on "+switch_name+" with image ${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG}", script: ""
-                                                build job: "stratum-bcm-test", parameters: [
-                                                    string(name: 'SWITCH_NAME', value: switch_name),
-                                                    string(name: 'DEBIAN_PACKAGE_PATH', value: "${DEBIAN_PACKAGE_PATH}"),
-                                                    string(name: 'DEBIAN_PACKAGE_NAME', value: "${DEBIAN_PACKAGE_NAME}"),
-                                                ]
-                                            }
-                                        }
-                                    }
+                                    // TODO: Re-enable after updating stratum-bcm-test to fetch latest debian package
+                                    // tests[switch_name+"-debian"] = {
+                                    //     node("${BUILD_NODE}") {
+                                    //         stage(switch_name) {sh returnStdout: false, label: "Start testing on "+switch_name+" with image ${DOCKER_IMAGE}:${DOCKER_IMAGE_TAG}", script: ""
+                                    //             build job: "stratum-bcm-test", parameters: [
+                                    //                 string(name: 'SWITCH_NAME', value: switch_name),
+                                    //                 string(name: 'DEBIAN_PACKAGE_PATH', value: "${DEBIAN_PACKAGE_PATH}"),
+                                    //                 string(name: 'DEBIAN_PACKAGE_NAME', value: "${DEBIAN_PACKAGE_NAME}"),
+                                    //             ]
+                                    //         }
+                                    //     }
+                                    // }
                                     node("${BUILD_NODE}") {
                                         stage('Docker'){
                                             script {
@@ -85,6 +86,14 @@ pipeline {
                     }
                     parallel tests
                 }
+            }
+        }
+        stage('Publish') {
+            steps {
+                    build job: "stratum-bcm-publish", parameters: [
+                                                                        string(name: 'TARGET', value: "${TARGET}"),
+                                                                        string(name: 'DOCKER_IMAGE_TAG', value: "${TARGET}"),
+                                                                    ]
             }
         }
     }
