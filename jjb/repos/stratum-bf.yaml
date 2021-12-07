@@ -5,7 +5,7 @@
 - project:
     name: stratum-bf
     project: '{name}'
-    
+
     jobs:
         - 'stratum-bf':
             build-timeout: 120
@@ -23,6 +23,10 @@
             build-timeout: 120
             target: 'bf'
             sde-version: '9.5.0'
+        - 'stratum-bf':
+            build-timeout: 120
+            target: 'bf'
+            sde-version: '9.7.0'
         - 'stratum-bf-weekly':
             build-timeout: 120
             target: 'bf'
@@ -39,6 +43,10 @@
             build-timeout: 120
             target: 'bf'
             sde-version: '9.5.0'
+        - 'stratum-bf-weekly':
+            build-timeout: 120
+            target: 'bf'
+            sde-version: '9.7.0'
         - 'stratum-bf-test-combined':
             build-timeout: 120
             target: 'bf'
@@ -67,6 +75,10 @@
             build-timeout: 120
             target: 'bfrt'
             sde-version: '9.5.0'
+        - 'stratum-bf':
+            build-timeout: 120
+            target: 'bfrt'
+            sde-version: '9.7.0'
         - 'stratum-bf-weekly':
             build-timeout: 120
             target: 'bfrt'
@@ -83,6 +95,10 @@
             build-timeout: 120
             target: 'bfrt'
             sde-version: '9.5.0'
+        - 'stratum-bf-weekly':
+            build-timeout: 120
+            target: 'bfrt'
+            sde-version: '9.7.0'
         - 'stratum-bf-test-combined':
             build-timeout: 120
             target: 'bfrt'
@@ -95,4 +111,4 @@
         - 'stratum-bf-p4rt-test':
             build-timeout: 120
             target: 'bfrt'
-            
+
