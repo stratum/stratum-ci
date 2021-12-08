@@ -20,6 +20,7 @@ pipeline {
             steps {
                 sh returnStdout: false, label: "Start building stratum-${TARGET}:${SDE_VERSION}", script: """
                     git clone https://github.com/stratum/stratum.git
+                    cd ${WORKSPACE}/stratum && git checkout ${GIT_REFS}
                     cd ${WORKSPACE}/stratum/stratum/hal/bin/barefoot/docker
                     STRATUM_TARGET=stratum_${TARGET} SDE_INSTALL_TAR=${WORKSPACE}/${SDE_TAR} RELEASE_BUILD=true ./build-stratum-bf-container.sh
                 """

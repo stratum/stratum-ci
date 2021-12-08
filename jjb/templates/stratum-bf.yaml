@@ -41,8 +41,12 @@
       - string:
           name: AWS_S3_CREDENTIAL
           default: '{aws-s3-credential}'
-          description: 'Credentials name for AWS S3 bucket'    
+          description: 'Credentials name for AWS S3 bucket'
 
+      - string:
+          name: GIT_REFS
+          default: 'origin/main'
+          description: 'git commit/ref/branch of Stratum to checkout'
     triggers:
       - timed: '{once-a-day}'
 
