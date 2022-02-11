@@ -30,7 +30,6 @@ pipeline {
 	        steps {
                 withDockerRegistry([ credentialsId: "${ONF_DOCKER_HUB_CREDENTIAL}", url: "" ]) {
                     sh returnStdout: false, label: "Start publishing stratum-${TARGET}:latest-${SDE_VERSION}", script: """
-                        docker tag stratumproject/stratum-${TARGET}:${SDE_VERSION} stratumproject/stratum-${TARGET}:latest-${SDE_VERSION}
                         docker push stratumproject/stratum-${TARGET}:latest-${SDE_VERSION}
 		            """
                 }
