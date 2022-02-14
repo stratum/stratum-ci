@@ -10,35 +10,11 @@
         - 'stratum-bf':
             build-timeout: 120
             target: 'bf'
-            sde-version: '9.3.1'
-        - 'stratum-bf':
-            build-timeout: 120
-            target: 'bf'
-            sde-version: '9.3.2'
-        - 'stratum-bf':
-            build-timeout: 120
-            target: 'bf'
-            sde-version: '9.4.0'
-        - 'stratum-bf':
-            build-timeout: 120
-            target: 'bf'
             sde-version: '9.5.0'
         - 'stratum-bf':
             build-timeout: 120
             target: 'bf'
-            sde-version: '9.7.0'
-        - 'stratum-bf-weekly':
-            build-timeout: 120
-            target: 'bf'
-            sde-version: '9.3.1'
-        - 'stratum-bf-weekly':
-            build-timeout: 120
-            target: 'bf'
-            sde-version: '9.3.2'
-        - 'stratum-bf-weekly':
-            build-timeout: 120
-            target: 'bf'
-            sde-version: '9.4.0'
+            sde-version: '9.5.2'
         - 'stratum-bf-weekly':
             build-timeout: 120
             target: 'bf'
@@ -46,7 +22,7 @@
         - 'stratum-bf-weekly':
             build-timeout: 120
             target: 'bf'
-            sde-version: '9.7.0'
+            sde-version: '9.5.2'
         - 'stratum-bf-test-combined':
             build-timeout: 120
             target: 'bf'
@@ -62,35 +38,23 @@
         - 'stratum-bf':
             build-timeout: 120
             target: 'bfrt'
-            sde-version: '9.3.1'
-        - 'stratum-bf':
-            build-timeout: 120
-            target: 'bfrt'
-            sde-version: '9.3.2'
-        - 'stratum-bf':
-            build-timeout: 120
-            target: 'bfrt'
-            sde-version: '9.4.0'
-        - 'stratum-bf':
-            build-timeout: 120
-            target: 'bfrt'
             sde-version: '9.5.0'
         - 'stratum-bf':
             build-timeout: 120
             target: 'bfrt'
+            sde-version: '9.5.2'
+        - 'stratum-bf':
+            build-timeout: 120
+            target: 'bfrt'
             sde-version: '9.7.0'
-        - 'stratum-bf-weekly':
+        - 'stratum-bf':
             build-timeout: 120
             target: 'bfrt'
-            sde-version: '9.3.1'
-        - 'stratum-bf-weekly':
+            sde-version: '9.7.1'
+        - 'stratum-bf':
             build-timeout: 120
             target: 'bfrt'
-            sde-version: '9.3.2'
-        - 'stratum-bf-weekly':
-            build-timeout: 120
-            target: 'bfrt'
-            sde-version: '9.4.0'
+            sde-version: '9.8.0'
         - 'stratum-bf-weekly':
             build-timeout: 120
             target: 'bfrt'
@@ -98,7 +62,19 @@
         - 'stratum-bf-weekly':
             build-timeout: 120
             target: 'bfrt'
+            sde-version: '9.5.2'
+        - 'stratum-bf-weekly':
+            build-timeout: 120
+            target: 'bfrt'
             sde-version: '9.7.0'
+        - 'stratum-bf-weekly':
+            build-timeout: 120
+            target: 'bfrt'
+            sde-version: '9.7.1'
+        - 'stratum-bf-weekly':
+            build-timeout: 120
+            target: 'bfrt'
+            sde-version: '9.8.0'
         - 'stratum-bf-test-combined':
             build-timeout: 120
             target: 'bfrt'
@@ -111,4 +87,3 @@
         - 'stratum-bf-p4rt-test':
             build-timeout: 120
             target: 'bfrt'
-
