@@ -19,7 +19,10 @@
         - 'stratum-bcm-weekly':
             build-timeout: 30 
             target: 'sdklt'
+        - 'stratum-bcm-publish':
+            build-timeout: 30
         - 'stratum-bcm-test-combined':
             build-timeout: 30
         - 'stratum-bcm-test':
-            build-timeout: 30          
+            build-timeout: 30    
+            

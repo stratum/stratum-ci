@@ -39,7 +39,7 @@
 
       - string:
           name: DOCKER_IMAGE_TAG
-          default: 'sdklt'
+          default: 'latest-sdklt'
 
       - string:
           name: DEBIAN_PACKAGE_PATH
@@ -54,6 +54,8 @@
           default: '{aws-s3-credential}'
           description: 'Credentials name for AWS S3 bucket'
 
+    triggers:
+      - timed: '{once-a-day}'
     project-type: pipeline
     concurrent: true
     extraEnvironmentVars: ""
