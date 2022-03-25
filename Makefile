@@ -13,8 +13,7 @@ JOBCONFIG_DIR ?= job-configs
 $(VENV_DIR):
 	@echo "Setting up virtualenv for JJB testing"
 	virtualenv $@
-	source $(VENV_DIR)/bin/activate && \
-	pip install jenkins-job-builder==$(JJB_VERSION) pipdeptree
+	$@/bin/pip install jenkins-job-builder==$(JJB_VERSION) pipdeptree
 
 $(JOBCONFIG_DIR):
 	mkdir $@
