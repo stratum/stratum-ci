@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
 
 ---
-# Job to trigger stratum-bcm-test on available switches
+# Job to trigger stratum-bf-test-combined on available switches
 
 - job-template:
     id: stratum-bf-test-combined

@@ -2,3 +2,5 @@
 # SPDX-License-Identifier: LicenseRef-ONF-Member-Only-1.0
 job-configs
 jenkins.ini
+.DS_Store
+venv-jjb
