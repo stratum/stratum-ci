@@ -6,6 +6,7 @@
 
 .PHONY: test clean
 
+SHELL         := /usr/bin/env bash
 VENV_DIR      ?= venv-jjb
 JJB_VERSION   ?= 3.10.0
 JOBCONFIG_DIR ?= job-configs
