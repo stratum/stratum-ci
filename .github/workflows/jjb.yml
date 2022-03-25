@@ -15,4 +15,5 @@ jobs:
       - name: Install virtualenv
         run: pip3 install virtualenv
       - name: Test JJB files
+        shell: bash
         run: make test
