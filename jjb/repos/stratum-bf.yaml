@@ -9,34 +9,6 @@
     jobs:
         - 'stratum-bf-weekly':
             build-timeout: 120
-            target: 'bf'
-            sde-version: '9.5.0'
-        - 'stratum-bf-weekly':
-            build-timeout: 120
-            target: 'bf'
-            sde-version: '9.5.2'
-        - 'stratum-bf-test-combined':
-            build-timeout: 120
-            target: 'bf'
-        - 'stratum-bf-test':
-            build-timeout: 120
-            target: 'bf'
-        - 'stratum-bf-gnmi-test':
-            build-timeout: 120
-            target: 'bf'
-        - 'stratum-bf-p4rt-test':
-            build-timeout: 120
-            target: 'bf'
-        - 'stratum-bf-weekly':
-            build-timeout: 120
-            target: 'bfrt'
-            sde-version: '9.5.0'
-        - 'stratum-bf-weekly':
-            build-timeout: 120
-            target: 'bfrt'
-            sde-version: '9.5.2'
-        - 'stratum-bf-weekly':
-            build-timeout: 120
             target: 'bfrt'
             sde-version: '9.7.0'
         - 'stratum-bf-weekly':
@@ -46,7 +18,15 @@
         - 'stratum-bf-weekly':
             build-timeout: 120
             target: 'bfrt'
+            sde-version: '9.7.2'
+        - 'stratum-bf-weekly':
+            build-timeout: 120
+            target: 'bfrt'
             sde-version: '9.8.0'
+        - 'stratum-bf-weekly':
+            build-timeout: 120
+            target: 'bfrt'
+            sde-version: '9.9.0'
         - 'stratum-bf-test-combined':
             build-timeout: 120
             target: 'bfrt'
