@@ -1,0 +1,5 @@
+- view:
+    name: Tests
+    description: "Stratum tests"
+    view-type: list
+    regex: ".*-test(-combined)?"

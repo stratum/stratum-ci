@@ -4,3 +4,5 @@ job-configs
 jenkins.ini
 .DS_Store
 venv-jjb
+.vscode
+
