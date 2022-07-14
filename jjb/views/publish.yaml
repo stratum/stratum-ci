@@ -1,0 +1,5 @@
+- view:
+    name: Publish
+    description: "Publish artifacts"
+    view-type: list
+    regex: ".*-publish"

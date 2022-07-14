@@ -1,0 +1,5 @@
+- view:
+    name: Weekly Builds
+    description: "Build Stratum images weekly with yy.mm.dd tag"
+    view-type: list
+    regex: ".*-weekly"
