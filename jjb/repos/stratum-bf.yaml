@@ -27,6 +27,10 @@
             build-timeout: 120
             target: 'bfrt'
             sde-version: '9.9.0'
+        - 'stratum-bf-weekly':
+            build-timeout: 120
+            target: 'bfrt'
+            sde-version: '9.10.0'
         - 'stratum-bf-test-combined':
             build-timeout: 120
             target: 'bfrt'
